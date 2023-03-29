@@ -1,0 +1,3 @@
+# /etc/rstudio/load-balancer
+balancer=sessions
+www-host-name={{server_ip_address}}

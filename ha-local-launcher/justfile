@@ -1,0 +1,79 @@
+LOG_LEVEL := "1"
+LOG_FILE := "_logs.txt"
+
+stack := "pwb-ha-local-launcher"
+
+# General settings
+pwbInstanceType := "t3.medium"
+pwbServerNumber := "2"
+pwbAmi := "ami-0d2a4a5d69e46ea0b" 
+region := "eu-west-1"
+domain := "pwb.posit.co"
+domainPW := "S0perS3cret!"
+
+_make-key-value-str key value:
+  echo "{{stack}}:{{key}}={{value}}"
+
+# ------------------------------------------------------------------------------
+# Pulumi
+# ------------------------------------------------------------------------------
+
+up:
+    pulumi up -y \
+        --config "$(just _make-key-value-str "pwbInstanceType" {{pwbInstanceType}})" \
+        --config "$(just _make-key-value-str "pwbServerNumber" {{pwbServerNumber}})" \
+        --config "$(just _make-key-value-str "pwbAmi" {{pwbAmi}})" \
+        --config "$(just _make-key-value-str "region" {{region}})" \
+        --config "$(just _make-key-value-str "domain" {{domain}})" \
+        --config "$(just _make-key-value-str "domainPW" {{domainPW}})" \
+        --logtostderr -v={{LOG_LEVEL}} 2> {{LOG_FILE}}
+
+destroy:
+    pulumi destroy -y --logtostderr -v={{LOG_LEVEL}} 2> {{LOG_FILE}}
+
+# ------------------------------------------------------------------------------
+# Server management
+# ------------------------------------------------------------------------------
+
+server-open num="1":
+    open http://$(pulumi stack output rsw_elb_dns):80
+
+server-ip:
+    echo $(pulumi stack output rsw_1_public_ip)
+    echo $(pulumi stack output rsw_2_public_ip)
+
+server-ssh num="1":
+    ssh \
+        -i key.pem \
+        -o StrictHostKeyChecking=no \
+        ubuntu@$(pulumi stack output rsw_{{num}}_public_dns)
+
+server-populate-simplead num="1":
+    ssh \
+        -i key.pem \
+        -o StrictHostKeyChecking=no \
+        ubuntu@$(pulumi stack output rsw_{{num}}_public_dns) "sudo bash create.sh"
+
+server-load-status num="1":
+    ssh \
+        -i key.pem \
+        -o StrictHostKeyChecking=no \
+        ubuntu@$(pulumi stack output rsw_elb_dns) \
+        'curl http://localhost:8787/load-balancer/status'
+
+# ------------------------------------------------------------------------------
+# KeyPairs
+# ------------------------------------------------------------------------------
+
+# Create a new keypair
+key-pair-new:
+    just key-pair-delete
+    just key-pair-new-script
+    chmod 400 key.pem
+    cat key.pub | pulumi config set public_key
+
+key-pair-delete:
+    rm -f key.pem key.pub
+
+key-pair-new-script:
+    ./venv/bin/python scripts/new_keypair.py

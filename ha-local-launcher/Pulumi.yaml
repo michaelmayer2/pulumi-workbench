@@ -1,0 +1,32 @@
+name: rsw-ha
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: Deploy Posit Workbench in HA/LB configuration 
+
+config:
+  pwbInstanceType:
+    type: string
+    description: AWS instance type for Workbench nodes (ex. "t3.medium")
+    default: t3.medium
+  pwbServerNumber:
+    type: integer 
+    description: Number of AWS Workbench nodes
+    default: 2
+  region:
+    type: string
+    description: Region to use in AWS 
+    default: eu-west-1
+  Domain:
+    type: string
+    description: Name of Domain to be used for AD (ex. "pwb.posit.co")
+    default: pwb.posit.co
+  DomainPW:
+    type: string
+    description: Password for the Administrator AD account 
+    default: S0perS3cret! 
+  pwbAmi:
+    type: string
+    description: A valid AMI used to deploy the instances (must be Ubunto 20.04 LTS)
+    default: ami-0d2a4a5d69e46ea0b

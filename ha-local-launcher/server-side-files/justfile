@@ -1,0 +1,233 @@
+set dotenv-load
+
+EFS_ID := env_var("EFS_ID")  # For example: 'fs-0ae474bb0403fc7c6'
+RSW_LICENSE := env_var("RSW_LICENSE")
+AD_DOMAIN := env_var("AD_DOMAIN")
+AD_PASSWD := env_var("AD_PASSWD")
+
+
+# -----------------------------------------------------------------------------
+# Build RSW
+# -----------------------------------------------------------------------------
+
+# Install RStudio workbench and all of the dependencies
+build-rsw: 
+    # Basic setup
+    just install-linux-tools 
+    
+    # Set up shared drive
+    just install-efs-utils
+    just mount-efs
+    sudo mkdir -p /mnt/efs/rstudio-server/shared-storage
+    
+    # Add AD integration
+    just integrate-ad
+
+    # Install RSW and required dependencies
+    just install-r 
+    just symlink-r
+    just install-rsw
+    just generate-cookie-key
+    sudo cp -r /etc/rstudio /etc/rstudio-original-conf-files
+
+    # Set up config files
+    just copy-rsw-config-files
+    just create-launcher-ssl
+    
+    # Restart
+    just restart-clean 
+
+# -----------------------------------------------------------------------------
+# Helpers
+# -----------------------------------------------------------------------------
+
+create-launcher-ssl:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    if [ ! -f /mnt/efs/rstudio-server/launcher.pem ]; then 
+        sudo openssl genpkey -algorithm RSA -out /mnt/efs/rstudio-server/launcher.pem -pkeyopt rsa_keygen_bits:2048
+        sudo chown rstudio-server:rstudio-server /mnt/efs/rstudio-server/launcher.pem
+    fi
+    if [ ! -f /mnt/efs/rstudio-server/launcher.pub ]; then
+        sudo openssl rsa -in /mnt/efs/rstudio-server/launcher.pem -pubout > /tmp/launcher.pub
+        sudo cp /tmp/launcher.pub /mnt/efs/rstudio-server/ 
+        sudo rm -f /tmp/launcher.pub    
+        sudo chown rstudio-server:rstudio-server /mnt/efs/rstudio-server/launcher.pub
+    fi
+    if [ ! -f /etc/rstudio/launcher.pem ]; then
+        sudo ln -s /mnt/efs/rstudio-server/launcher.pem /etc/rstudio
+    fi
+    if [ ! -f /etc/rstudio/launcher.pub ]; then 
+        sudo ln -s /mnt/efs/rstudio-server/launcher.pub /etc/rstudio
+    fi
+
+restart-clean:
+    sudo systemctl stop rstudio-server  
+    sudo systemctl stop rstudio-launcher 
+    sudo rm -rf /var/log/rstudio*
+    sudo systemctl start rstudio-launcher
+    sudo systemctl start rstudio-server 
+    sudo bash -x /usr/bin/rstudio-launcher restart 
+    sudo bash -x /usr/sbin/rstudio-server restart  
+
+restart-server:
+    sudo rstudio-server restart
+
+restart-cluster:
+    sudo rstudio-server reset-cluster
+
+restart-launcher:
+    sudo rstudio-launcher restart
+
+status:
+    sudo rstudio-server status
+
+status-load-balancer:
+    curl http://localhost:8787/load-balancer/status
+
+logs:
+    sudo tail /var/log/rstudio/rstudio-server/rserver.log
+
+list-nodes:
+    sudo rstudio-server list-nodes
+
+edit:
+    sudo vim /etc/rstudio/rserver.conf
+
+edit-database:
+    sudo vim /etc/rstudio/database.conf
+
+edit-load-balancer:
+    sudo vim /etc/rstudio/load-balancer
+
+# -----------------------------------------------------------------------------
+# Install
+# -----------------------------------------------------------------------------
+
+install-linux-tools:
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive 
+    sudo -E apt-get update
+    sudo -E apt-get install -y tree
+    sudo -E apt-get install -y bat ldap-utils
+    sudo -E apt-get install -y gdebi-core
+    echo "alias bat='batcat --paging never'" >> ~/.bashrc
+
+install-rsw RSW_VERSION='2022.07.1-554.pro3':
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive
+    if [ ! -f rstudio-workbench-{{RSW_VERSION}}-amd64.deb ]; then 
+        curl -O https://download2.rstudio.org/server/bionic/amd64/rstudio-workbench-{{RSW_VERSION}}-amd64.deb
+    fi 
+    sudo -E gdebi -n rstudio-workbench-{{RSW_VERSION}}-amd64.deb 
+    sudo rstudio-server license-manager activate {{RSW_LICENSE}}
+    rm -f rstudio-workbench-{{RSW_VERSION}}-amd64.deb
+
+install-r r_version='4.2.2':
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive                   
+    curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-{{r_version}}_1_amd64.deb
+    sudo -E gdebi -n r-{{r_version}}_1_amd64.deb 
+    rm -f r-{{r_version}}_1_amd64.deb
+
+copy-rsw-config-files:
+    sudo cp ~/rserver.conf /etc/rstudio/rserver.conf 
+    sudo cp ~/load-balancer /etc/rstudio/load-balancer 
+    sudo cp ~/database.conf /etc/rstudio/database.conf 
+    sudo cp ~/launcher.conf /etc/rstudio/launcher.conf
+
+# -----------------------------------------------------------------------------
+# EFS Mount
+# -----------------------------------------------------------------------------
+
+install-efs-utils:
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive                   
+    set -euxo pipefail
+    sudo -E apt-get -y install binutils
+    if ! [ -d efs-utils ]; then 
+        git clone https://github.com/aws/efs-utils
+    fi
+    cd efs-utils
+    ./build-deb.sh
+    sudo -E apt-get -y install ./build/amazon-efs-utils*deb
+
+set-efs-conf:
+    #!/bin/bash
+    sudo bash -c 'cat <<EOF >> /etc/fstab
+    # mount efs
+    {{EFS_ID}}:/ /mnt/efs efs defaults,_netdev 0 0
+    EOF'
+
+mount-efs:
+    sudo mkdir -p /mnt/efs;
+    sudo mount -t efs -o tls {{EFS_ID}}:/ /mnt/efs;
+    just set-efs-conf
+
+# -----------------------------------------------------------------------------
+# Linux mgmt
+# -----------------------------------------------------------------------------
+
+add-user name password:
+    #!/bin/bash
+    sudo mkdir -p /mnt/efs/home
+    sudo useradd --create-home --home-dir /mnt/efs/home/{{name}} -s /bin/bash {{name}};
+    echo -e '{{password}}\n{{password}}' | sudo passwd {{name}};
+
+generate-cookie-key:
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive                   
+    sudo -E apt-get update
+    sudo -E apt-get install -y uuid
+    if [ ! -f /mnt/efs/rstudio-server/secure-cookie-key ]; then 
+        sudo sh -c "echo `uuid` > /mnt/efs/rstudio-server/secure-cookie-key"
+        sudo chmod 0600 /mnt/efs/rstudio-server/secure-cookie-key
+        sudo chown rstudio-server:rstudio-server /mnt/efs/rstudio-server/secure-cookie-key
+    fi 
+
+symlink-r r_version='4.2.2':
+    #!/bin/bash
+    if ! [ -f /usr/local/bin/R ]; then
+        sudo ln -s /opt/R/{{r_version}}/bin/R /usr/local/bin/R
+        sudo ln -s /opt/R/{{r_version}}/bin/Rscript /usr/local/bin/Rscript
+    fi
+
+
+install-adcli:
+    #!/bin/bash
+    sudo apt-get update 
+    sudo apt install -y git automake libtool libkrb5-dev libldap2-dev libsasl2-dev make
+    git clone -b 0.9.2 https://gitlab.freedesktop.org/realmd/adcli.git
+    pushd adcli
+    ./autogen.sh --disable-doc
+    make
+    sudo make install
+    popd
+    rm -rf adcli 
+
+install-ad-prereqs:
+    #!/bin/bash
+    sudo DEBIAN_FRONTEND=noninteractive apt-get -y install sssd realmd krb5-user samba-common packagekit pamtester
+
+update-etchosts:
+    #!/bin/bash
+    sudo apt-get install -y net-tools
+    echo -e "\n#Local server\n`ifconfig | grep inet | head -1 | awk '{print $2}'` `hostname`" | sudo tee -a /etc/hosts
+
+copy-ad-files:
+    #!/bin/bash
+    #let's remove the symlink so that systemd does not interfere 
+    sudo rm -f /etc/resolv.conf
+    sudo cp ~/krb5.conf /etc/
+    sudo cp ~/resolv.conf /etc/
+
+join-ad:
+    #!/bin/bash
+    echo $AD_PASSWD | sudo realm join -U Administrator $AD_DOMAIN
+
+integrate-ad:
+    just install-adcli 
+    just install-ad-prereqs
+    just update-etchosts 
+    just copy-ad-files
+    just join-ad
