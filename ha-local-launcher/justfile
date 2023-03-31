@@ -58,8 +58,19 @@ server-load-status num="1":
     ssh \
         -i key.pem \
         -o StrictHostKeyChecking=no \
-        ubuntu@$(pulumi stack output rsw_elb_dns) \
+        ubuntu@$(pulumi stack output rsw_{{num}}_public_dns) \
         'curl http://localhost:8787/load-balancer/status'
+
+create-users num="10":
+    ssh \
+        -i key.pem \
+        -o StrictHostKeyChecking=no \
+        ubuntu@$(pulumi stack output rsw_1_public_dns) \
+        "for i in \`seq 1 {{num}}\`; do expect create-users.exp posit\`printf %04i \$i\` Testme1234; echo \$i; done"
+
+#        bash -c "for i in \`seq 100 105\`; do echo \$i; done"
+#        bash -c 'for i in \`seq 100 105\`; do expect create-users.exp posit\`printf %04i $i\` \'Testme1234!+\'; done'
+
 
 # ------------------------------------------------------------------------------
 # KeyPairs

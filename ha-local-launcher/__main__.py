@@ -175,7 +175,7 @@ def main():
     # --------------------------------------------------------------------------
 
     for i in range(n_servers):
-        lb.TargetGroupAttachment("rsw-tgt-group-"+str(i+1),
+        lb.TargetGroupAttachment("rsw-tgt-host-"+str(i+1),
              target_group_arn=rsw_tgt_group.arn,
              target_id=rsw_server[i].id, 
 	     port="8787"
@@ -185,7 +185,7 @@ def main():
     # Add Listener to ELB 
     # --------------------------------------------------------------------------
 
-    lb.Listener("rsw-elb-listener",
+    lb.Listener("rsw-elb-http-listener",
     	load_balancer_arn=rsw_elb.arn,
     	protocol="TCP",
         port=80, 
@@ -199,7 +199,7 @@ def main():
     # Create EFS.
     # --------------------------------------------------------------------------
     # Create a new file system.
-    file_system = efs.FileSystem("efs-rsw-ha-3",tags= tags | {"Name": "rsw-ha-efs-3"})
+    file_system = efs.FileSystem("rsw-efs",tags= tags | {"Name": "rsw-efs"})
     pulumi.export("efs_id", file_system.id)
 
     # Create a mount target. Assumes that the servers are on the same subnet id.
@@ -278,6 +278,7 @@ def main():
                 'echo "export EFS_ID=',            file_system.id,           '" >> .env;\n',
                 'echo "export AD_PASSWD=',         ad_passwd,   '" >> .env;\n',
                 'echo "export AD_DOMAIN=',         ad_domain,   '" >> .env;\n',
+                'echo "export NAME=',              str(name+1),        '" >> .env;\n',
                 'echo "export RSW_LICENSE=',       os.getenv("RSW_LICENSE"), '" >> .env;',
             ), 
             connection=connection, 
@@ -324,14 +325,18 @@ def main():
             serverSideFile(
                 "server-side-files/config/rserver.conf",
                 "~/rserver.conf",
-                pulumi.Output.all(rsw_elb.dns_name).apply(lambda x: create_template("server-side-files/config/rserver.conf").render(server_ip_address=x[0]))
+                pulumi.Output.all(rsw_elb.dns_name).apply(lambda x: create_template("server-side-files/config/rserver.conf").render(elb_server_dns_name=x[0]))
 
             ),
             serverSideFile(
                 "server-side-files/config/launcher.conf",
                 "~/launcher.conf",
                 pulumi.Output.all().apply(lambda x: create_template("server-side-files/config/launcher.conf").render())
-
+            ),
+            serverSideFile(
+                "server-side-files/config/logging.conf",
+                "~/logging.conf",
+                pulumi.Output.all().apply(lambda x: create_template("server-side-files/config/logging.conf").render())
             ),
             serverSideFile(
                 "server-side-files/config/krb5.conf",
@@ -344,20 +349,36 @@ def main():
                 "~/resolv.conf",
                 pulumi.Output.all(ad_domain,ad.dns_ip_addresses).apply(lambda x: create_template("server-side-files/config/resolv.conf").render(domain_name=x[0],dns1=x[1][0], dns2=x[1][1]))
             ),
+            serverSideFile(
+                "server-side-files/config/create-users.exp",
+                "~/create-users.exp",
+                pulumi.Output.all(ad_domain,ad_passwd).apply(lambda x: create_template("server-side-files/config/create-users.exp").render(domain_name=x[0],domain_passwd=x[1]))
+            ),
+            serverSideFile(
+                "server-side-files/config/create-group.exp",
+                "~/create-group.exp",
+                pulumi.Output.all(ad_domain,ad_passwd).apply(lambda x: create_template("server-side-files/config/create-group.exp").render(domain_name=x[0],domain_passwd=x[1]))
+            ),
+            serverSideFile(
+                "server-side-files/config/add-group-member.exp",
+                "~/add-group-member.exp",
+                pulumi.Output.all(ad_domain,ad_passwd).apply(lambda x: create_template("server-side-files/config/add-group-member.exp").render(domain_name=x[0],domain_passwd=x[1]))
+            ),
         ]
 
         command_copy_config_files = []
         for f in server_side_files:
-            command_copy_config_files.append(
-                remote.Command(
-                    f"copy {f.file_out} server {name}",
-                    create=pulumi.Output.concat('echo "', f.template_render_command, f'" > {f.file_out}'),
-                    connection=connection, 
-                    opts=pulumi.ResourceOptions(depends_on=[server]),
-                    triggers=[hash_file(f.file_in)]
+            if True: 
+                command_copy_config_files.append(
+                    remote.Command(
+                        f"copy {f.file_out} server {name}",
+                        create=pulumi.Output.concat('echo "', f.template_render_command, f'" > {f.file_out}'),
+                        connection=connection, 
+                        opts=pulumi.ResourceOptions(depends_on=[server]),
+                        triggers=[hash_file(f.file_in)]
+                    )
                 )
-            )
-        
+
         command_build_rsw = remote.Command(
             f"server-{name}-build-rsw", 
             # create="alias just='/home/ubuntu/bin/just'; just build-rsw", 
