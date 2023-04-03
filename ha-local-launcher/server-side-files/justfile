@@ -253,6 +253,7 @@ join-ad:
     #!/bin/bash
     echo $AD_PASSWD | sudo realm join -U Administrator $AD_DOMAIN
     echo "ad_gpo_map_service = +rstudio" | sudo tee -a /etc/sssd/sssd.conf
+    echo "krb5_canonicalize = True" | sudo tee -a /etc/sssd/sssd.conf
     sudo sed -i 's#use_fully_qualified_names.*#use_fully_qualified_names=False#' /etc/sssd/sssd.conf
     sudo systemctl stop sssd && sudo rm -f /var/lib/sss/db/* && sudo systemctl start sssd
     sudo pam-auth-update --enable mkhomedir
