@@ -32,7 +32,7 @@ class ConfigValues:
         self.pwbAmi = self.config.require("pwbAmi")
         self.Domain = self.config.require("Domain")
         self.DomainPW = self.config.require("DomainPW")
-
+        self.aws_region = self.config.require("region")
 
 def create_template(path: str) -> jinja2.Template:
     with open(path, 'r') as f:
@@ -158,6 +158,8 @@ def main():
     # Stand up the servers
     # --------------------------------------------------------------------------
     n_servers=int(config.pwbServerNumber)
+    pulumi.export(f'number_of_servers', n_servers)
+
     rsw_server=[0]*n_servers
 
     for i in range(n_servers):
@@ -230,7 +232,6 @@ def main():
     pulumi.export("db_address", db.address)
     pulumi.export("db_endpoint", db.endpoint)
     pulumi.export("db_name", db.name)
-    pulumi.export("db_domain", db.domain)
 
     # --------------------------------------------------------------------------
     # Create Active Directory
@@ -347,7 +348,7 @@ def main():
             serverSideFile(
                 "server-side-files/config/resolv.conf",
                 "~/resolv.conf",
-                pulumi.Output.all(ad_domain,ad.dns_ip_addresses).apply(lambda x: create_template("server-side-files/config/resolv.conf").render(domain_name=x[0],dns1=x[1][0], dns2=x[1][1]))
+                pulumi.Output.all(ad_domain,ad.dns_ip_addresses,config.aws_region).apply(lambda x: create_template("server-side-files/config/resolv.conf").render(domain_name=x[0],dns1=x[1][0], dns2=x[1][1], aws_region=x[2]))
             ),
             serverSideFile(
                 "server-side-files/config/create-users.exp",
