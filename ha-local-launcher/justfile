@@ -5,14 +5,19 @@ stack := "pwb-ha-local-launcher"
 
 # General settings
 pwbInstanceType := "t3.medium"
-pwbServerNumber := "2"
+pwbServerNumber := "4"
 pwbAmi := "ami-0d2a4a5d69e46ea0b" 
 region := "eu-west-1"
 domain := "pwb.posit.co"
 domainPW := "S0perS3cret!"
 
+#_make-key-value-str key value:
+#  echo "{{stack}}:{{key}}={{value}}"
+
+
 _make-key-value-str key value:
-  echo "{{stack}}:{{key}}={{value}}"
+  echo "{{key}}={{value}}"
+
 
 # ------------------------------------------------------------------------------
 # Pulumi
@@ -27,6 +32,17 @@ up:
         --config "$(just _make-key-value-str "domain" {{domain}})" \
         --config "$(just _make-key-value-str "domainPW" {{domainPW}})" \
         --logtostderr -v={{LOG_LEVEL}} 2> {{LOG_FILE}}
+
+
+preview:
+    pulumi preview \
+        --config "$(just _make-key-value-str "pwbInstanceType" {{pwbInstanceType}})" \
+        --config "$(just _make-key-value-str "pwbServerNumber" {{pwbServerNumber}})" \
+        --config "$(just _make-key-value-str "pwbAmi" {{pwbAmi}})" \
+        --config "$(just _make-key-value-str "region" {{region}})" \
+        --config "$(just _make-key-value-str "domain" {{domain}})" \
+        --config "$(just _make-key-value-str "domainPW" {{domainPW}})"
+
 
 destroy:
     pulumi destroy -y --logtostderr -v={{LOG_LEVEL}} 2> {{LOG_FILE}}

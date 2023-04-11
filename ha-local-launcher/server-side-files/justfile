@@ -119,11 +119,11 @@ install-linux-tools:
     echo "alias bat='batcat --paging never'" >> ~/.bashrc
 
 #install-rsw RSW_VERSION='2022.07.0-548.pro5':
-install-rsw RSW_VERSION='2023.03.0-386.pro1':
+install-rsw RSW_VERSION='2023.03.0-407.pro1':
     #!/bin/env bash
     export DEBIAN_FRONTEND=noninteractive
     if [ ! -f rstudio-workbench-{{RSW_VERSION}}-amd64.deb ]; then 
-        curl -O https://download2.rstudio.org/server/bionic/amd64/rstudio-workbench-{{RSW_VERSION}}-amd64.deb
+        curl -O https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-workbench-{{RSW_VERSION}}-amd64.deb
     fi 
     sudo -E gdebi -n rstudio-workbench-{{RSW_VERSION}}-amd64.deb 
     sudo rstudio-server license-manager activate {{RSW_LICENSE}}
