@@ -1,0 +1,36 @@
+name: slurm 
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: Deploy SLURM 
+
+config:
+  slurmVersion:
+    type: string
+    description: SLURM version used (ex. "22.05.8-1", must contain 4 numbers) 
+    default: 22.05.8-1
+  slurmHeadNodeInstanceType:
+    type: string
+    description: AWS instance type for SLURM Head nodes (ex. "t3.medium")
+    default: t3.medium
+  slurmHeadNodeServerNumber:
+    type: integer 
+    description: Number of SLURM Head nodes
+    default: 1
+  slurmComputeNodeInstanceType:
+    type: string
+    description: AWS instance type for SLURM Compute nodes (ex. "t3.medium")
+    default: t3.medium
+  slurmComputeNodeServerNumber:
+    type: integer
+    description: Number of SLURM Compute nodes
+    default: 2 
+  region:
+    type: string
+    description: Region to use in AWS 
+    default: eu-west-1
+  slurmAmi:
+    type: string
+    description: A valid AMI used to deploy the SLURM nodes (must be Ubunto 20.04 LTS)
+    default: ami-0d2a4a5d69e46ea0b

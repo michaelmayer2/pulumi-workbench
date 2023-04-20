@@ -1,3 +1,4 @@
 # /etc/rstudio/load-balancer
+launcher-local-proxy=1
 balancer=sessions
 #www-host-name={{server_ip_address}}

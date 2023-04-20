@@ -1,0 +1,110 @@
+set dotenv-load
+
+EFS_ID := env_var("EFS_ID")  # For example: 'fs-0ae474bb0403fc7c6'
+SLURM_VERSION := env_var("SLURM_VERSION")
+#AD_DOMAIN := env_var("AD_DOMAIN")
+#AD_PASSWD := env_var("AD_PASSWD")
+
+
+# -----------------------------------------------------------------------------
+# Build RSW
+# -----------------------------------------------------------------------------
+
+# Install RStudio workbench and all of the dependencies
+build-slurm-head-nodes: 
+    #!/bin/env bash
+    # Basic setup
+    just install-efs-utils
+    just mount-efs 
+    just slurm-prereqs
+    just slurm-compile
+    just slurm-postinstall    
+
+
+slurm-prereqs:
+    #!/bin/env bash
+    #add munge user
+    sudo groupadd -r --gid=105 munge
+    sudo useradd -r -s /bin/bash -g munge --uid=105 munge
+    #add slurm users
+    sudo groupadd -r --gid=995 slurm 
+    sudo useradd -r -g slurm --uid=995 slurm \
+
+    #install os dependencies
+    sudo apt-get update 
+    sudo apt-get -y install \
+       wget \
+       bzip2 \
+       perl \
+       gcc-9 \
+       g++-9 \
+       gcc \
+       g++ \
+       git \
+       gnupg \
+       make \
+       munge \
+       libmunge-dev \
+       libcgroup-dev \
+       python-is-python3 \
+       python3.8-dev \
+       python3-pip \
+       cython3 \
+       mariadb-server \
+       mariadb-client \
+       libmariadbd-dev \
+       psmisc \
+       bash-completion \
+       vim \
+       python3-nose
+
+
+
+slurm-compile:
+    #!/bin/env bash
+    tmpdir=`mktemp -d` 
+    pushd $tmpdir
+    git clone --depth 1 -b slurm-`echo {{SLURM_VERSION}} | sed 's/\./-/g'` https://github.com/SchedMD/slurm.git
+    pushd slurm
+    ./configure --enable-debug --prefix=/opt/slurm --sysconfdir=/opt/etc/slurm \
+        --with-mysql_config=/usr/bin
+    sudo make install
+    popd
+    rm -rf $tmpdir
+
+slurm-postinstall:
+    #!/bin/env bash
+    
+
+install-efs-utils:
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive                   
+    set -euxo pipefail
+    if ! [ -f /sbin/mount.efs ]; then
+        sudo -E apt-get -y install binutils
+        tmpdir=`mktemp -d`
+        cd $tmpdir 
+        git clone https://github.com/aws/efs-utils
+        cd efs-utils
+        ./build-deb.sh
+        sudo -E apt-get -y install ./build/amazon-efs-utils*deb
+        cd 
+        rm -rf $tmpdir
+    fi
+
+
+mount-efs:
+    #!/bin/env bash
+    df | grep efs$
+    if [ $? -ne 0 ]; then 
+        sudo mkdir -p /efs;
+        sudo mount -t efs -o tls {{EFS_ID}}:/ /efs;
+        just set-efs-conf
+    fi
+
+set-efs-conf:
+    #!/bin/bash
+    sudo bash -c 'cat <<EOF >> /etc/fstab
+    # mount efs
+    {{EFS_ID}}:/ /efs efs defaults,_netdev 0 0
+    EOF'
