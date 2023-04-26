@@ -13,7 +13,7 @@ config:
   slurmHeadNodeInstanceType:
     type: string
     description: AWS instance type for SLURM Head nodes (ex. "t3.medium")
-    default: t3.medium
+    default: t3.xlarge
   slurmHeadNodeServerNumber:
     type: integer 
     description: Number of SLURM Head nodes
@@ -25,7 +25,7 @@ config:
   slurmComputeNodeServerNumber:
     type: integer
     description: Number of SLURM Compute nodes
-    default: 2 
+    default: 0 
   region:
     type: string
     description: Region to use in AWS 

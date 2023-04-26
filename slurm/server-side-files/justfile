@@ -17,19 +17,70 @@ build-slurm-head-nodes:
     just install-efs-utils
     just mount-efs 
     just slurm-prereqs
-    just slurm-compile
-    just slurm-postinstall    
+    if [ ! -d /opt/slurm/bin ]; then 
+        just slurm-compile-and-install
+    fi 
+    just slurm-logs-prepare
+    just slurm-copy-config
+    just slurm-start-daemons
 
+slurm-start-daemons:
+    #!/bin/env bash
+    sudo /opt/slurm/sbin/slurmdbd 
+    sudo /opt/slurm/sbin/slurmctld
 
-slurm-prereqs:
+slurm-copy-config:
+    #!/bin/env bash
+    sudo cp slurmdbd.conf /opt/slurm/etc
+    sudo chmod 0600 /opt/slurm/etc/slurmdbd.conf
+    sudo chown slurm /opt/slurm/etc/slurmdbd.conf
+    sudo cp slurm.conf /opt/slurm/etc 
+
+munge-setup: 
     #!/bin/env bash
     #add munge user
     sudo groupadd -r --gid=105 munge
     sudo useradd -r -s /bin/bash -g munge --uid=105 munge
     #add slurm users
-    sudo groupadd -r --gid=995 slurm 
-    sudo useradd -r -g slurm --uid=995 slurm \
+    sudo groupadd -r --gid=995 slurm
+    sudo useradd -r -g slurm --uid=995 slurm 
+    sudo apt-get install -y libmunge-dev libmunge2 munge
 
+munge-config:
+    #!/bin/env bash
+    #create key
+    sudo dd if=/dev/random bs=1 count=1024 of=/etc/munge/munge.key
+    #add permissions
+    sudo chown munge:munge /etc/munge/munge.key
+    sudo chmod 400 /etc/munge/munge.key
+    sudo systemctl restart munge
+
+slurm-logs-prepare:
+    #!/bin/env bash
+    sudo mkdir -p /var/spool/slurm
+    sudo chown slurm:slurm /var/spool/slurm
+    sudo chmod 755 /var/spool/slurm
+    sudo mkdir -p /var/spool/slurm/slurmctld
+    sudo chown slurm:slurm /var/spool/slurm/slurmctld
+    sudo chmod 755 /var/spool/slurm/slurmctld
+    sudo mkdir -p /var/spool/slurm/cluster_state
+    sudo chown slurm:slurm /var/spool/slurm/cluster_state
+    sudo touch /var/log/slurmctld.log
+    sudo chown slurm:slurm /var/log/slurmctld.log
+    sudo touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+    sudo chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+    sudo mkdir -p /opt/slurm/etc
+    sudo mkdir -p /var/{lib,log,run}/slurm
+    sudo chown slurm:slurm /var/{lib,log,run}/slurm
+
+slurm-prereqs:
+    just munge-setup
+    just munge-config
+    just slurm-logs-prepare
+    just slurm-osdeps
+
+slurm-osdeps:
+    #!/bin/env bash
     #install os dependencies
     sudo apt-get update 
     sudo apt-get -y install \
@@ -43,14 +94,11 @@ slurm-prereqs:
        git \
        gnupg \
        make \
-       munge \
-       libmunge-dev \
        libcgroup-dev \
        python-is-python3 \
        python3.8-dev \
        python3-pip \
        cython3 \
-       mariadb-server \
        mariadb-client \
        libmariadbd-dev \
        psmisc \
@@ -58,23 +106,23 @@ slurm-prereqs:
        vim \
        python3-nose
 
-
-
-slurm-compile:
+slurm-compile-and-install:
     #!/bin/env bash
     tmpdir=`mktemp -d` 
     pushd $tmpdir
     git clone --depth 1 -b slurm-`echo {{SLURM_VERSION}} | sed 's/\./-/g'` https://github.com/SchedMD/slurm.git
     pushd slurm
-    ./configure --enable-debug --prefix=/opt/slurm --sysconfdir=/opt/etc/slurm \
+    ./configure --enable-debug --prefix=/opt/slurm --sysconfdir=/opt/slurm/etc \
         --with-mysql_config=/usr/bin
-    sudo make install
+    make -j $(( 2*`nproc` ))
+    sudo make install 
     popd
-    rm -rf $tmpdir
+    sudo rm -rf $tmpdir
 
-slurm-postinstall:
-    #!/bin/env bash
-    
+slurm-config:
+    #!/bin/env
+    echo -e "CgroupAutomount=yes\nConstrainCores=yes\nConstrainRAMSpace=yes\nConstrainDevices=yes" | sudo tee -a /opt/slurm/etc/cgroup.conf
+
 
 install-efs-utils:
     #!/bin/env bash

@@ -110,18 +110,20 @@ def main():
     # --------------------------------------------------------------------------
     # Make security groups
     # --------------------------------------------------------------------------
+
     slurm_security_group = ec2.SecurityGroup(
         "slurm-sg",
         description="SLURM security group for Pulumi deployment",
         ingress=[
             {"protocol": "TCP", "from_port": 22, "to_port": 22, 'cidr_blocks': ['0.0.0.0/0'], "description": "SSH"},
 	    {"protocol": "TCP", "from_port": 2049, "to_port": 2049, 'cidr_blocks': ['172.31.0.0/16'], "description": "NFS"},
-        ],
+	],
         egress=[
             {"protocol": "All", "from_port": 0, "to_port": 0, 'cidr_blocks': ['0.0.0.0/0'], "description": "Allow all outbout traffic"},
         ],
         tags=tags
     )
+
 
     # --------------------------------------------------------------------------
     # Stand up the servers
@@ -148,6 +150,8 @@ def main():
             instance_type=config.slurmHeadNodeInstanceType,
 	    ami=config.slurmAmi
         )
+
+
 
     # -------------------------------------------------------------------------
     # Compute Nodes
@@ -188,24 +192,35 @@ def main():
     # --------------------------------------------------------------------------
     # Create a postgresql database.
     # --------------------------------------------------------------------------
-    db = rds.Instance(
+    slurm_acct_security_group_db = ec2.SecurityGroup(
+        "slurm-acct-sg-db",
+        description="SLURM security group for EC2 access from Accounting DB",
+        ingress=[
+            {"protocol": "TCP", "from_port": 3306, "to_port": 3306, 'cidr_blocks': ['172.31.0.0/16'], "description": "MySQL"},
+        ],
+        tags=tags
+    )
+
+    slurm_acct_db = rds.Instance(
         "slurm-accounting-db",
         instance_class="db.t3.micro",
         allocated_storage=5,
         username="slurm_acct_admin",
         password="password",
-        db_name="slurm",
+        db_name="slurm_acct",
         engine="mysql",
         engine_version="5.7",
         publicly_accessible=True,
         skip_final_snapshot=True,
         tags=tags | {"Name": "slurm-acct-db"},
-        vpc_security_group_ids=[slurm_security_group.id]
+        vpc_security_group_ids=[slurm_acct_security_group_db.id]
     )
-    pulumi.export("slurm_acct_db_port", db.port)
-    pulumi.export("slurm_acct_db_address", db.address)
-    pulumi.export("slurm_acct_db_endpoint", db.endpoint)
-    pulumi.export("slurm_acct_db_name", db.name)
+
+
+    pulumi.export("slurm_acct_db_port", slurm_acct_db.port)
+    pulumi.export("slurm_acct_db_address", slurm_acct_db.address)
+    pulumi.export("slurm_acct_db_endpoint", slurm_acct_db.endpoint)
+    pulumi.export("slurm_acct_db_name", slurm_acct_db.name)
 
 
     # Install required software one each server
@@ -224,7 +239,7 @@ def main():
                 'echo "export SLURM_VERSION=',            config.slurmVersion,           '" >> .env;\n',
             ),
             connection=connection,
-            opts=pulumi.ResourceOptions(depends_on=[server, db, file_system])
+            opts=pulumi.ResourceOptions(depends_on=[server, slurm_acct_db, file_system])
         )
 
         command_install_justfile = remote.Command(
@@ -257,7 +272,12 @@ def main():
             serverSideFile(
                 "server-side-files/config/slurm.conf",
                 "~/slurm.conf",
-                pulumi.Output.all(db.address).apply(lambda x: create_template("server-side-files/config/slurm.conf").render(db_address=x[0]))
+                pulumi.Output.all(slurm_head_node[0].private_dns.apply(lambda host: host.split(".")[0])).apply(lambda x: create_template("server-side-files/config/slurm.conf").render(slurmctld_host=x[0]))
+            ),
+            serverSideFile( 
+                "server-side-files/config/slurmdbd.conf",
+                "~/slurmdbd.conf",
+                pulumi.Output.all(slurm_acct_db.address,slurm_acct_db.username,slurm_acct_db.password,slurm_acct_db.db_name,slurm_head_node[0].private_dns.apply(lambda host: host.split(".")[0])).apply(lambda x: create_template("server-side-files/config/slurmdbd.conf").render(slurmdb_host=x[0],slurmdb_user=x[1],slurmdb_pass=x[2],slurmdb_name=x[3],slurmdbd_host=x[4]))
             ),
         ]
 
@@ -277,8 +297,8 @@ def main():
 
         command_build_rsw = remote.Command(
             f"server-{name}-build-slurm-head-node",
-            # create="alias just='/home/ubuntu/bin/just'; just build-slurm",
-            create="""export PATH="$PATH:$HOME/bin"; just build-slurm""",
+            # create="alias just='/home/ubuntu/bin/just'; just build-slurm-head-nodes",
+            create="""export PATH="$PATH:$HOME/bin"; just build-slurm-head-nodes""",
             connection=connection,
             opts=pulumi.ResourceOptions(depends_on=[command_set_environment_variables, command_install_justfile, command_copy_justfile] + command_copy_config_files)
         )
