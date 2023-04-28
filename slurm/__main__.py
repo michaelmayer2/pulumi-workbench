@@ -1,10 +1,12 @@
 """An AWS Python Pulumi program"""
 
 import hashlib
-import os
+import os,json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List
+from functools import reduce
+from itertools import chain
 
 import jinja2
 import pulumi
@@ -56,6 +58,7 @@ def make_slurm_server(
     tags: Dict, 
     key_pair: ec2.KeyPair, 
     vpc_group_ids: List[str],
+    subnet_id: str,
     instance_type: str,
     ami: str
 ):
@@ -66,6 +69,7 @@ def make_slurm_server(
         vpc_security_group_ids=vpc_group_ids,
         ami=ami,
         tags=tags,
+        subnet_id=subnet_id,
         key_name=key_pair.key_name,
         iam_instance_profile="WindowsJoinDomain"
     )
@@ -73,7 +77,6 @@ def make_slurm_server(
     # Export final pulumi variables.
     pulumi.export(f'slurm_{name}_public_ip', server.public_ip)
     pulumi.export(f'slurm_{name}_public_dns', server.public_dns)
-    pulumi.export(f'slurm_{name}_subnet_id', server.subnet_id)
 
     return server
 
@@ -91,6 +94,11 @@ def main():
     }
 
     # --------------------------------------------------------------------------
+    # Red EC2 instance details
+    # --------------------------------------------------------------------------
+    ec2_details=json.load(open("tools/ec2-list.json"))
+
+    # --------------------------------------------------------------------------
     # Set up keys.
     # --------------------------------------------------------------------------
     key_pair = ec2.KeyPair(
@@ -105,7 +113,8 @@ def main():
     # --------------------------------------------------------------------------
     vpc = ec2.get_vpc(default=True)
     vpc_subnets = ec2.get_subnet_ids(vpc_id=vpc.id)
-
+    vpc_subnet = ec2.get_subnet(id=vpc_subnets.ids[0])
+    
  
     # --------------------------------------------------------------------------
     # Make security groups
@@ -116,7 +125,11 @@ def main():
         description="SLURM security group for Pulumi deployment",
         ingress=[
             {"protocol": "TCP", "from_port": 22, "to_port": 22, 'cidr_blocks': ['0.0.0.0/0'], "description": "SSH"},
-	    {"protocol": "TCP", "from_port": 2049, "to_port": 2049, 'cidr_blocks': ['172.31.0.0/16'], "description": "NFS"},
+	        {"protocol": "TCP", "from_port": 111, "to_port": 111, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "portmapper"},
+            {"protocol": "TCP", "from_port": 2049, "to_port": 2049, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "NFS/EFS"},
+            {"protocol": "TCP", "from_port": 6817, "to_port": 6817, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "slurmctld"},
+            {"protocol": "TCP", "from_port": 6818, "to_port": 6818, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "slurmd"},
+            #{"protocol": "All", "from_port": 0, "to_port": 0, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "Allow all inbound traffic from subnet"},
 	],
         egress=[
             {"protocol": "All", "from_port": 0, "to_port": 0, 'cidr_blocks': ['0.0.0.0/0'], "description": "Allow all outbout traffic"},
@@ -148,7 +161,8 @@ def main():
             key_pair=key_pair,
             vpc_group_ids=[slurm_security_group.id],
             instance_type=config.slurmHeadNodeInstanceType,
-	    ami=config.slurmAmi
+            subnet_id=vpc_subnet.id,
+	        ami=config.slurmAmi
         )
 
 
@@ -169,6 +183,7 @@ def main():
             key_pair=key_pair,
             vpc_group_ids=[slurm_security_group.id],
             instance_type=config.slurmHeadNodeInstanceType,
+            subnet_id=vpc_subnet.id,
             ami=config.slurmAmi
         )
 
@@ -196,7 +211,7 @@ def main():
         "slurm-acct-sg-db",
         description="SLURM security group for EC2 access from Accounting DB",
         ingress=[
-            {"protocol": "TCP", "from_port": 3306, "to_port": 3306, 'cidr_blocks': ['172.31.0.0/16'], "description": "MySQL"},
+            {"protocol": "TCP", "from_port": 3306, "to_port": 3306, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "MySQL"},
         ],
         tags=tags
     )
@@ -222,28 +237,46 @@ def main():
     pulumi.export("slurm_acct_db_endpoint", slurm_acct_db.endpoint)
     pulumi.export("slurm_acct_db_name", slurm_acct_db.name)
 
-
     # Install required software one each server
     # --------------------------------------------------------------------------
-    for name, server in zip(range(n_slurm_head_nodes), slurm_head_node):
+
+    ctr=0
+    totalinstances=n_slurm_head_nodes+n_slurm_compute_nodes
+    command_build_slurm=[""]*totalinstances
+
+    for name, server in zip(["slurm_head_node-" + str(n+1) for n in list(range(n_slurm_head_nodes))]+["slurm_compute_node-" + str(n+1) for n in list(range(n_slurm_compute_nodes))], 
+                                            slurm_head_node+slurm_compute_node):
         connection = remote.ConnectionArgs(
             host=server.public_dns,
             user="ubuntu",
             private_key=Path("key.pem").read_text()
         )
 
+        #remove domain name from private_dns
+        slurm_nodes=list(slurm_compute_node[n].private_dns.apply(lambda host: host.split(".")[0])  for n in range(n_slurm_compute_nodes))
+        newtest=pulumi.Output.all(slurm_nodes).apply(lambda l: f"{l}")
+        
+        compute_cpus=pulumi.Output.all(str(ec2_details[config.slurmHeadNodeInstanceType]["vcpus"])).apply(lambda l: f"{l[0]}")
+        compute_mem=pulumi.Output.all(str(ec2_details[config.slurmHeadNodeInstanceType]["memory_in_mib"])).apply(lambda l: f"{l[0]}")
+
         command_set_environment_variables = remote.Command(
-            f"server-{name}-set-env",
+            f"{name}-set-env",
             create=pulumi.Output.concat(
-                'echo "export EFS_ID=',            file_system.id,           '" >> .env;\n',
+                'echo "export EFS_ID=',            file_system.id,           '" > .env;\n',
                 'echo "export SLURM_VERSION=',            config.slurmVersion,           '" >> .env;\n',
+                'echo "export CIDR_RANGE=',            vpc_subnet.cidr_block,           '" >> .env;\n',
+		        'echo "export NFS_SERVER=',            slurm_head_node[0].private_dns.apply(lambda host: host.split(".")[0]),           '" >> .env;\n',
+                'echo "export SLURM_SERVERS=',            slurm_head_node[0].private_dns.apply(lambda host: host.split(".")[0]),           '" >> .env;\n',
+                'echo "export SLURM_COMPUTE_NODES=\\"',   newtest,           '\\"" >> .env;\n',
+                'echo "export SLURM_COMPUTE_NODES_CPU=',  compute_cpus,          '" >> .env;\n',                
+                'echo "export SLURM_COMPUTE_NODES_MEM=',   compute_mem,          '" >> .env;\n',
             ),
             connection=connection,
             opts=pulumi.ResourceOptions(depends_on=[server, slurm_acct_db, file_system])
         )
 
         command_install_justfile = remote.Command(
-            f"server-{name}-install-justfile",
+            f"{name}-install-justfile",
             create="\n".join([
                 """curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin;""",
                 """echo 'export PATH="$PATH:$HOME/bin"' >> ~/.bashrc;"""
@@ -253,7 +286,7 @@ def main():
         )
 
         command_copy_justfile = remote.CopyFile(
-            f"server-{name}-copy-justfile",
+            f"{name}--copy-justfile",
             local_path="server-side-files/justfile",
             remote_path='justfile',
             connection=connection,
@@ -268,18 +301,19 @@ def main():
             file_out: str
             template_render_command: pulumi.Output
 
-        server_side_files = [
-            serverSideFile(
-                "server-side-files/config/slurm.conf",
-                "~/slurm.conf",
-                pulumi.Output.all(slurm_head_node[0].private_dns.apply(lambda host: host.split(".")[0])).apply(lambda x: create_template("server-side-files/config/slurm.conf").render(slurmctld_host=x[0]))
-            ),
-            serverSideFile( 
-                "server-side-files/config/slurmdbd.conf",
-                "~/slurmdbd.conf",
-                pulumi.Output.all(slurm_acct_db.address,slurm_acct_db.username,slurm_acct_db.password,slurm_acct_db.db_name,slurm_head_node[0].private_dns.apply(lambda host: host.split(".")[0])).apply(lambda x: create_template("server-side-files/config/slurmdbd.conf").render(slurmdb_host=x[0],slurmdb_user=x[1],slurmdb_pass=x[2],slurmdb_name=x[3],slurmdbd_host=x[4]))
-            ),
-        ]
+        if "slurm_head_node" in name: 
+            server_side_files = [
+                serverSideFile(
+                    "server-side-files/config/slurm.conf",
+                    "~/slurm.conf",
+                    pulumi.Output.all(slurm_head_node[0].private_dns.apply(lambda host: host.split(".")[0]),config.slurmComputeNodeServerNumber).apply(lambda x: create_template("server-side-files/config/slurm.conf").render(slurmctld_host=x[0],compute_nodes=x[1]))
+                ),
+                serverSideFile( 
+                    "server-side-files/config/slurmdbd.conf",
+                    "~/slurmdbd.conf",
+                    pulumi.Output.all(slurm_acct_db.address,slurm_acct_db.username,slurm_acct_db.password,slurm_acct_db.db_name,slurm_head_node[0].private_dns.apply(lambda host: host.split(".")[0])).apply(lambda x: create_template("server-side-files/config/slurmdbd.conf").render(slurmdb_host=x[0],slurmdb_user=x[1],slurmdb_pass=x[2],slurmdb_name=x[3],slurmdbd_host=x[4]))
+                ),
+            ]
 
 
         command_copy_config_files = []
@@ -295,13 +329,22 @@ def main():
                     )
                 )
 
-        command_build_rsw = remote.Command(
-            f"server-{name}-build-slurm-head-node",
-            # create="alias just='/home/ubuntu/bin/just'; just build-slurm-head-nodes",
-            create="""export PATH="$PATH:$HOME/bin"; just build-slurm-head-nodes""",
-            connection=connection,
+        if "head_node" not in name:
+            opts=pulumi.ResourceOptions(depends_on=[command_set_environment_variables, command_install_justfile, command_copy_justfile,  command_build_slurm[0]] + command_copy_config_files)
+        else:
             opts=pulumi.ResourceOptions(depends_on=[command_set_environment_variables, command_install_justfile, command_copy_justfile] + command_copy_config_files)
+
+        command_build_slurm[ctr] = remote.Command(
+            f"{name}-do-it",
+            # create="alias just='/home/ubuntu/bin/just'; just do-it",
+            create="""export PATH="$PATH:$HOME/bin"; just do-it""",
+            connection=connection,
+            opts=opts
         )
+        ctr=ctr+1
+
+def new_func():
+    return 0
 
 
 main()

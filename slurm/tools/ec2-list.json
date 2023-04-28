@@ -1,0 +1,2330 @@
+{
+  "m6gd.medium": {
+    "memory_in_mib": 4096,
+    "vcpus": 1
+  },
+  "z1d.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "m5ad.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "r6id.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "r5n.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "m5dn.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "r6in.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "x2gd.8xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 32
+  },
+  "m6gd.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "r5ad.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "m6a.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "d3en.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "m7g.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "r6gd.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "r6a.metal": {
+    "memory_in_mib": 1572864,
+    "vcpus": 192
+  },
+  "r5.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "x1e.8xlarge": {
+    "memory_in_mib": 999424,
+    "vcpus": 32
+  },
+  "m5dn.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "m6id.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "m6idn.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "r6in.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "f1.2xlarge": {
+    "memory_in_mib": 124928,
+    "vcpus": 8
+  },
+  "c6a.48xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 192
+  },
+  "c6a.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "r6a.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "m5a.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "i3en.3xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 12
+  },
+  "m6id.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "g5.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "c6i.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "i3en.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "c6gd.metal": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "r6id.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "m5zn.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "m6idn.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "m6i.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "c6a.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "c6in.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "m7g.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "c5d.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "r6g.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "x2iezn.4xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 16
+  },
+  "r5dn.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "i4i.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "c6id.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "im4gn.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "m6gd.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "m4.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "c6i.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "m5n.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "m5d.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "r6g.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "r6i.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "m5d.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "c4.4xlarge": {
+    "memory_in_mib": 30720,
+    "vcpus": 16
+  },
+  "x1e.2xlarge": {
+    "memory_in_mib": 249856,
+    "vcpus": 8
+  },
+  "r5a.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "t2.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "r6g.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "m6gd.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "r6idn.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "c6i.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "m5a.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "x2iedn.xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 4
+  },
+  "is4gen.4xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 16
+  },
+  "t4g.nano": {
+    "memory_in_mib": 512,
+    "vcpus": 2
+  },
+  "d2.8xlarge": {
+    "memory_in_mib": 249856,
+    "vcpus": 36
+  },
+  "c6i.32xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 128
+  },
+  "m5dn.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "m6a.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "c5ad.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "g5.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "m5a.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "c5n.2xlarge": {
+    "memory_in_mib": 21504,
+    "vcpus": 8
+  },
+  "m5.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "r6idn.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "r5a.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "m5zn.6xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 24
+  },
+  "x2iedn.2xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 8
+  },
+  "g3.16xlarge": {
+    "memory_in_mib": 499712,
+    "vcpus": 64
+  },
+  "r6in.metal": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "c6g.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "r6id.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "im4gn.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "c6in.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "is4gen.xlarge": {
+    "memory_in_mib": 24576,
+    "vcpus": 4
+  },
+  "x2gd.metal": {
+    "memory_in_mib": 1048576,
+    "vcpus": 64
+  },
+  "r6g.medium": {
+    "memory_in_mib": 8192,
+    "vcpus": 1
+  },
+  "c7g.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "r6a.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "r6gd.medium": {
+    "memory_in_mib": 8192,
+    "vcpus": 1
+  },
+  "i3en.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "r6gd.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "c6gn.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "c5n.4xlarge": {
+    "memory_in_mib": 43008,
+    "vcpus": 16
+  },
+  "x1e.32xlarge": {
+    "memory_in_mib": 3997696,
+    "vcpus": 128
+  },
+  "c5ad.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "r5ad.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "m6a.metal": {
+    "memory_in_mib": 786432,
+    "vcpus": 192
+  },
+  "c5ad.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "r6i.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "t3.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "m6i.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "r5b.metal": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "c6gn.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "r6in.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "x2iezn.8xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 32
+  },
+  "m6g.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "c6in.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "m5d.metal": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "m6id.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "m5dn.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "r6i.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "c7g.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "g5.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "i4i.metal": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "c5.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "x2gd.4xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 16
+  },
+  "m7g.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "p2.8xlarge": {
+    "memory_in_mib": 499712,
+    "vcpus": 32
+  },
+  "c6g.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "m5.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "c6a.32xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 128
+  },
+  "m6in.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r6a.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "m5ad.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "r6a.32xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "g4ad.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "m5.metal": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "c6g.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "t3.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "r4.16xlarge": {
+    "memory_in_mib": 499712,
+    "vcpus": 64
+  },
+  "c5.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "m5ad.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "t4g.medium": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "m6in.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "m5d.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "m5ad.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "c7g.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "t3a.small": {
+    "memory_in_mib": 2048,
+    "vcpus": 2
+  },
+  "c7g.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "r6gd.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "r7g.medium": {
+    "memory_in_mib": 8192,
+    "vcpus": 1
+  },
+  "m6in.32xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "g4ad.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "inf1.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "m6in.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "c4.8xlarge": {
+    "memory_in_mib": 61440,
+    "vcpus": 36
+  },
+  "d3.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "c6i.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "r5a.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "d2.2xlarge": {
+    "memory_in_mib": 62464,
+    "vcpus": 8
+  },
+  "c5ad.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "m5dn.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "m6id.32xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "m6g.metal": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "c5d.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "c5d.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "im4gn.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "r6id.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "c6i.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "z1d.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "c6gn.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "r5a.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "r5n.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "r6idn.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "m6idn.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "t3a.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "c6id.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "m5zn.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "c6id.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "r7g.metal": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "m6i.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "r6idn.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "m5.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "c5a.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "g4dn.metal": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "c6in.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "r6idn.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "m6gd.metal": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r5b.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "m5.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "d3en.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "x1.16xlarge": {
+    "memory_in_mib": 999424,
+    "vcpus": 64
+  },
+  "x2idn.24xlarge": {
+    "memory_in_mib": 1572864,
+    "vcpus": 96
+  },
+  "g4ad.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "r5ad.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "c5n.large": {
+    "memory_in_mib": 5376,
+    "vcpus": 2
+  },
+  "m5ad.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "m5d.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r6id.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "r5a.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "c6g.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "r6id.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "c6a.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "u-6tb1.56xlarge": {
+    "memory_in_mib": 6291456,
+    "vcpus": 224
+  },
+  "r5.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "c5d.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "h1.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "x2iedn.metal": {
+    "memory_in_mib": 4194304,
+    "vcpus": 128
+  },
+  "i4i.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "inf1.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "m6gd.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "d3.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "g3.8xlarge": {
+    "memory_in_mib": 249856,
+    "vcpus": 32
+  },
+  "c6in.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "u-12tb1.112xlarge": {
+    "memory_in_mib": 12582912,
+    "vcpus": 448
+  },
+  "c6in.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "i4i.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "r5b.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "c5n.9xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 36
+  },
+  "r5b.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "t3a.medium": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "m7g.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r5.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "r5b.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "inf1.6xlarge": {
+    "memory_in_mib": 49152,
+    "vcpus": 24
+  },
+  "c6gd.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "r5dn.metal": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "m6g.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "m5n.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "m6i.metal": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "c5a.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "g4dn.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "c6i.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "h1.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "t2.micro": {
+    "memory_in_mib": 1024,
+    "vcpus": 1
+  },
+  "r5ad.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "t4g.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "p3.2xlarge": {
+    "memory_in_mib": 62464,
+    "vcpus": 8
+  },
+  "r6g.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "c4.large": {
+    "memory_in_mib": 3840,
+    "vcpus": 2
+  },
+  "g5.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "vt1.3xlarge": {
+    "memory_in_mib": 24576,
+    "vcpus": 12
+  },
+  "r5dn.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "m4.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "mac1.metal": {
+    "memory_in_mib": 32768,
+    "vcpus": 12
+  },
+  "m6i.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r5.metal": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "r5dn.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "r7g.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "r5n.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "t2.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "t3.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "r7g.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "c5a.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "mac2.metal": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "t3.medium": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "r5a.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "c5d.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "c5ad.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "d3en.6xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 24
+  },
+  "r6g.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "vt1.6xlarge": {
+    "memory_in_mib": 49152,
+    "vcpus": 24
+  },
+  "u-3tb1.56xlarge": {
+    "memory_in_mib": 3145728,
+    "vcpus": 224
+  },
+  "x2gd.16xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 64
+  },
+  "g3.4xlarge": {
+    "memory_in_mib": 124928,
+    "vcpus": 16
+  },
+  "r6id.32xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "d3.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "c6gn.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "m7g.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "m5zn.3xlarge": {
+    "memory_in_mib": 49152,
+    "vcpus": 12
+  },
+  "m6idn.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "x2gd.2xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 8
+  },
+  "m5n.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "c5a.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "r5b.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "c6a.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "r6gd.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "c5a.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "c5.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "r6gd.metal": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "r5d.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "r6a.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "m6a.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "c6gn.medium": {
+    "memory_in_mib": 2048,
+    "vcpus": 1
+  },
+  "x2gd.medium": {
+    "memory_in_mib": 16384,
+    "vcpus": 1
+  },
+  "m4.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "d3en.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "m5n.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "r5b.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "c6id.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "c5a.16xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "c6a.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "i3.xlarge": {
+    "memory_in_mib": 31232,
+    "vcpus": 4
+  },
+  "i3.large": {
+    "memory_in_mib": 15616,
+    "vcpus": 2
+  },
+  "x2idn.16xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 64
+  },
+  "t4g.small": {
+    "memory_in_mib": 2048,
+    "vcpus": 2
+  },
+  "c6id.32xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 128
+  },
+  "t3.micro": {
+    "memory_in_mib": 1024,
+    "vcpus": 2
+  },
+  "c7g.medium": {
+    "memory_in_mib": 2048,
+    "vcpus": 1
+  },
+  "m6i.32xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "m4.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "m7g.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "r6in.32xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "r6a.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "h1.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "c7g.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "g5.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r5d.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "r7g.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "r5d.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "x2iedn.4xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 16
+  },
+  "x2gd.large": {
+    "memory_in_mib": 32768,
+    "vcpus": 2
+  },
+  "m5zn.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "is4gen.2xlarge": {
+    "memory_in_mib": 49152,
+    "vcpus": 8
+  },
+  "m5dn.metal": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "r5ad.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "c5ad.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "r5.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "m6g.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "r5d.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "x2gd.12xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 48
+  },
+  "m6i.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "m5ad.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "t4g.micro": {
+    "memory_in_mib": 1024,
+    "vcpus": 2
+  },
+  "c4.2xlarge": {
+    "memory_in_mib": 15360,
+    "vcpus": 8
+  },
+  "z1d.metal": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "m6g.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "u-6tb1.112xlarge": {
+    "memory_in_mib": 6291456,
+    "vcpus": 448
+  },
+  "c6id.metal": {
+    "memory_in_mib": 262144,
+    "vcpus": 128
+  },
+  "r6a.48xlarge": {
+    "memory_in_mib": 1572864,
+    "vcpus": 192
+  },
+  "x2idn.metal": {
+    "memory_in_mib": 2097152,
+    "vcpus": 128
+  },
+  "x2iezn.12xlarge": {
+    "memory_in_mib": 1572864,
+    "vcpus": 48
+  },
+  "m6id.metal": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "h1.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "m6idn.32xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "c7g.metal": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "t3.nano": {
+    "memory_in_mib": 512,
+    "vcpus": 2
+  },
+  "r5d.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "c5.metal": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "r7g.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "p4d.24xlarge": {
+    "memory_in_mib": 1179648,
+    "vcpus": 96
+  },
+  "c5d.18xlarge": {
+    "memory_in_mib": 147456,
+    "vcpus": 72
+  },
+  "m6in.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "r5.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "g4dn.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "r5d.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "x2gd.xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 4
+  },
+  "m5.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "m6idn.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "r5d.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "r5ad.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "c6in.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "m5a.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "r5n.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "t4g.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "m6id.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r6gd.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "r5n.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "c6a.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "m5zn.metal": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "m5ad.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "c4.xlarge": {
+    "memory_in_mib": 7680,
+    "vcpus": 4
+  },
+  "i4i.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "r4.2xlarge": {
+    "memory_in_mib": 62464,
+    "vcpus": 8
+  },
+  "m6a.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r6idn.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "m6g.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "r6idn.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "z1d.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "c6gd.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "r5.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "m6in.metal": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "m6idn.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "c5n.18xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 72
+  },
+  "t4g.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "c5.9xlarge": {
+    "memory_in_mib": 73728,
+    "vcpus": 36
+  },
+  "r6i.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "t3a.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "r4.xlarge": {
+    "memory_in_mib": 31232,
+    "vcpus": 4
+  },
+  "c5.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "m6in.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "m5n.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "c6a.metal": {
+    "memory_in_mib": 393216,
+    "vcpus": 192
+  },
+  "r6in.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "m5d.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "r6gd.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "c6a.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "z1d.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "m4.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "c7g.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "m7g.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "c6in.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "c6in.32xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 128
+  },
+  "r6id.metal": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "c6g.medium": {
+    "memory_in_mib": 2048,
+    "vcpus": 1
+  },
+  "x2iezn.6xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 24
+  },
+  "g4ad.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r6id.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "g5.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "m6i.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "m5dn.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "m5dn.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "c5n.metal": {
+    "memory_in_mib": 196608,
+    "vcpus": 72
+  },
+  "im4gn.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "vt1.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "c5d.metal": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "r5b.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "is4gen.large": {
+    "memory_in_mib": 12288,
+    "vcpus": 2
+  },
+  "r6a.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "c5.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "x2iedn.24xlarge": {
+    "memory_in_mib": 3145728,
+    "vcpus": 96
+  },
+  "m5n.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "m5n.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "x1e.xlarge": {
+    "memory_in_mib": 124928,
+    "vcpus": 4
+  },
+  "inf1.24xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 96
+  },
+  "m5.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "m5.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "r5n.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "m5d.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "r5ad.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "m5dn.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "r5dn.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "c5.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "r6in.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "r6i.metal": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "c7g.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "m5n.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "x2iezn.metal": {
+    "memory_in_mib": 1572864,
+    "vcpus": 48
+  },
+  "r5dn.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "m6in.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "t2.medium": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "m5a.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "m4.10xlarge": {
+    "memory_in_mib": 163840,
+    "vcpus": 40
+  },
+  "r5dn.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "p3.16xlarge": {
+    "memory_in_mib": 499712,
+    "vcpus": 64
+  },
+  "m6idn.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "i3en.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "r6a.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "i3.8xlarge": {
+    "memory_in_mib": 249856,
+    "vcpus": 32
+  },
+  "x2iezn.2xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 8
+  },
+  "x1e.16xlarge": {
+    "memory_in_mib": 1998848,
+    "vcpus": 64
+  },
+  "c6gn.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "t2.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "r5.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "c6id.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "r5ad.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "g4dn.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r5.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "r6idn.metal": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "x2iedn.16xlarge": {
+    "memory_in_mib": 2097152,
+    "vcpus": 64
+  },
+  "m7g.metal": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "d2.4xlarge": {
+    "memory_in_mib": 124928,
+    "vcpus": 16
+  },
+  "r4.8xlarge": {
+    "memory_in_mib": 249856,
+    "vcpus": 32
+  },
+  "m6gd.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "m6g.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r6idn.32xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "x2idn.32xlarge": {
+    "memory_in_mib": 2097152,
+    "vcpus": 128
+  },
+  "c5d.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "r5d.metal": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "m6idn.metal": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "r6i.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "im4gn.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "m6id.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "m5zn.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "m5.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "c5ad.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "c5a.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "c6gn.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "m7g.medium": {
+    "memory_in_mib": 4096,
+    "vcpus": 1
+  },
+  "r6id.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "r4.large": {
+    "memory_in_mib": 15616,
+    "vcpus": 2
+  },
+  "d3.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "i3.16xlarge": {
+    "memory_in_mib": 499712,
+    "vcpus": 64
+  },
+  "r6g.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "m5d.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "r6in.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "z1d.6xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 24
+  },
+  "c6gn.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "r5n.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "p3.8xlarge": {
+    "memory_in_mib": 249856,
+    "vcpus": 32
+  },
+  "i3en.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "u-9tb1.112xlarge": {
+    "memory_in_mib": 9437184,
+    "vcpus": 448
+  },
+  "r5b.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "m6g.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "m6gd.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "m6a.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "m6id.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "r6a.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "c6i.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "m6g.medium": {
+    "memory_in_mib": 4096,
+    "vcpus": 1
+  },
+  "p2.xlarge": {
+    "memory_in_mib": 62464,
+    "vcpus": 4
+  },
+  "x1e.4xlarge": {
+    "memory_in_mib": 499712,
+    "vcpus": 16
+  },
+  "c5ad.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "r6i.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "i3en.metal": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "i4i.32xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "r5dn.4xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 16
+  },
+  "m6gd.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "t3a.nano": {
+    "memory_in_mib": 512,
+    "vcpus": 2
+  },
+  "p2.16xlarge": {
+    "memory_in_mib": 749568,
+    "vcpus": 64
+  },
+  "x1.32xlarge": {
+    "memory_in_mib": 1998848,
+    "vcpus": 128
+  },
+  "r5a.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "im4gn.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "d3en.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "i4i.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "t3.small": {
+    "memory_in_mib": 2048,
+    "vcpus": 2
+  },
+  "m5a.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "f1.16xlarge": {
+    "memory_in_mib": 999424,
+    "vcpus": 64
+  },
+  "r6g.metal": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "m6in.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "c6id.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "c6gd.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "c6gd.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "i3.2xlarge": {
+    "memory_in_mib": 62464,
+    "vcpus": 8
+  },
+  "r4.4xlarge": {
+    "memory_in_mib": 124928,
+    "vcpus": 16
+  },
+  "g4dn.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "m5d.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  },
+  "g4ad.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "r7g.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "m5ad.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "c6id.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "r5a.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "m6i.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "f1.4xlarge": {
+    "memory_in_mib": 249856,
+    "vcpus": 16
+  },
+  "m5a.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "m6a.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "x2iedn.8xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 32
+  },
+  "r6i.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "z1d.3xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 12
+  },
+  "r6i.32xlarge": {
+    "memory_in_mib": 1048576,
+    "vcpus": 128
+  },
+  "c6id.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "u-18tb1.112xlarge": {
+    "memory_in_mib": 18874368,
+    "vcpus": 448
+  },
+  "c5n.xlarge": {
+    "memory_in_mib": 10752,
+    "vcpus": 4
+  },
+  "c6a.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "c6gd.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "c6g.2xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 8
+  },
+  "c6i.metal": {
+    "memory_in_mib": 262144,
+    "vcpus": 128
+  },
+  "r7g.16xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 64
+  },
+  "m6id.24xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 96
+  },
+  "r6g.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "m6a.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "r5n.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "d3en.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "r6in.xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 4
+  },
+  "c6g.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "t2.nano": {
+    "memory_in_mib": 512,
+    "vcpus": 1
+  },
+  "t2.small": {
+    "memory_in_mib": 2048,
+    "vcpus": 1
+  },
+  "c6gd.medium": {
+    "memory_in_mib": 2048,
+    "vcpus": 1
+  },
+  "is4gen.medium": {
+    "memory_in_mib": 6144,
+    "vcpus": 1
+  },
+  "c6gd.4xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 16
+  },
+  "m6idn.16xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 64
+  },
+  "r7g.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "m6a.32xlarge": {
+    "memory_in_mib": 524288,
+    "vcpus": 128
+  },
+  "r6gd.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "i3.metal": {
+    "memory_in_mib": 524288,
+    "vcpus": 72
+  },
+  "r6i.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "c5d.9xlarge": {
+    "memory_in_mib": 73728,
+    "vcpus": 36
+  },
+  "m6id.large": {
+    "memory_in_mib": 8192,
+    "vcpus": 2
+  },
+  "d2.xlarge": {
+    "memory_in_mib": 31232,
+    "vcpus": 4
+  },
+  "i3en.large": {
+    "memory_in_mib": 16384,
+    "vcpus": 2
+  },
+  "g5.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "g5.48xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 192
+  },
+  "c6i.xlarge": {
+    "memory_in_mib": 8192,
+    "vcpus": 4
+  },
+  "c6g.8xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 32
+  },
+  "r5d.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "i3.4xlarge": {
+    "memory_in_mib": 124928,
+    "vcpus": 16
+  },
+  "r6idn.12xlarge": {
+    "memory_in_mib": 393216,
+    "vcpus": 48
+  },
+  "p3dn.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "c5a.large": {
+    "memory_in_mib": 4096,
+    "vcpus": 2
+  },
+  "x2iedn.32xlarge": {
+    "memory_in_mib": 4194304,
+    "vcpus": 128
+  },
+  "r6in.2xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 8
+  },
+  "is4gen.8xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 32
+  },
+  "g3s.xlarge": {
+    "memory_in_mib": 31232,
+    "vcpus": 4
+  },
+  "m6in.8xlarge": {
+    "memory_in_mib": 131072,
+    "vcpus": 32
+  },
+  "t3a.micro": {
+    "memory_in_mib": 1024,
+    "vcpus": 2
+  },
+  "c6gd.12xlarge": {
+    "memory_in_mib": 98304,
+    "vcpus": 48
+  },
+  "m6i.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "r5n.metal": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "m6a.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "c6in.metal": {
+    "memory_in_mib": 262144,
+    "vcpus": 128
+  },
+  "t3a.xlarge": {
+    "memory_in_mib": 16384,
+    "vcpus": 4
+  },
+  "i4i.8xlarge": {
+    "memory_in_mib": 262144,
+    "vcpus": 32
+  },
+  "m5a.12xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 48
+  },
+  "m6a.48xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 192
+  },
+  "c6g.metal": {
+    "memory_in_mib": 131072,
+    "vcpus": 64
+  },
+  "c5.18xlarge": {
+    "memory_in_mib": 147456,
+    "vcpus": 72
+  },
+  "r5dn.24xlarge": {
+    "memory_in_mib": 786432,
+    "vcpus": 96
+  },
+  "i3en.6xlarge": {
+    "memory_in_mib": 196608,
+    "vcpus": 24
+  },
+  "g4dn.2xlarge": {
+    "memory_in_mib": 32768,
+    "vcpus": 8
+  },
+  "g4dn.4xlarge": {
+    "memory_in_mib": 65536,
+    "vcpus": 16
+  }
+}

@@ -2,15 +2,49 @@ set dotenv-load
 
 EFS_ID := env_var("EFS_ID")  # For example: 'fs-0ae474bb0403fc7c6'
 SLURM_VERSION := env_var("SLURM_VERSION")
+CIDR_RANGE := env_var("CIDR_RANGE")
+NFS_SERVER := env_var("NFS_SERVER")
+SLURM_SERVERS := env_var("SLURM_SERVERS")
+SLURM_COMPUTE_NODES := env_var("SLURM_COMPUTE_NODES")
+SLURM_COMPUTE_NODES_MEM := env_var("SLURM_COMPUTE_NODES_MEM")
+SLURM_COMPUTE_NODES_CPU := env_var("SLURM_COMPUTE_NODES_CPU")
 #AD_DOMAIN := env_var("AD_DOMAIN")
 #AD_PASSWD := env_var("AD_PASSWD")
 
 
-# -----------------------------------------------------------------------------
-# Build RSW
-# -----------------------------------------------------------------------------
+do-it:
+    #!/bin/env bash
+    if [ `hostname` == {{SLURM_SERVERS}} ]; then
+        just build-slurm-head-nodes
+    fi
+    if [[ "{{SLURM_COMPUTE_NODES}}" =~ .*`hostname`.* ]]; then
+        just build-slurm-compute-nodes
+    fi
 
-# Install RStudio workbench and all of the dependencies
+build-slurm-compute-nodes:
+    #!/bin/env bash
+    sudo apt-get update 
+    sudo apt-get install -y libnfs-utils nfs-common
+    just slurm-mount
+    just slurm-run-osdeps
+    just munge-setup
+    just munge-key-copy
+    just start-slurmd 
+
+start-slurmd:
+    #!/bin/env bash
+    sudo mkdir /var/log/slurm
+    sudo chown slurm /var/log/slurm
+    sudo /opt/slurm/sbin/slurmd 
+
+slurm-mount:
+    #!/bin/env bash
+    sudo mkdir /opt/slurm
+    echo "{{NFS_SERVER}}:/opt/slurm /opt/slurm nfs4 defaults 0 0" | sudo tee -a /etc/fstab
+    sudo mount -a
+ 
+
+
 build-slurm-head-nodes: 
     #!/bin/env bash
     # Basic setup
@@ -22,11 +56,24 @@ build-slurm-head-nodes:
     fi 
     just slurm-logs-prepare
     just slurm-copy-config
+    just slurm-config
     just slurm-start-daemons
+
+    just export-slurm
+    
+
+
+export-slurm:
+    #!/bin/env bash
+    sudo apt install -y nfs-kernel-server
+    echo "/opt/slurm  {{CIDR_RANGE}}(ro,sync,no_root_squash,no_subtree_check)" | sudo tee /etc/exports
+    sudo exportfs -ar
+
 
 slurm-start-daemons:
     #!/bin/env bash
     sudo /opt/slurm/sbin/slurmdbd 
+    sleep 10
     sudo /opt/slurm/sbin/slurmctld
 
 slurm-copy-config:
@@ -49,8 +96,14 @@ munge-setup:
 munge-config:
     #!/bin/env bash
     #create key
-    sudo dd if=/dev/random bs=1 count=1024 of=/etc/munge/munge.key
-    #add permissions
+    sudo mkdir -p /opt/slurm
+    sudo dd if=/dev/random bs=1 count=1024 of=/opt/slurm/.munge.key
+    just munge-key-copy
+
+munge-key-copy:
+    #!/bin/env bash
+    #copy key and add permissions
+    sudo cp /opt/slurm/.munge.key /etc/munge/munge.key
     sudo chown munge:munge /etc/munge/munge.key
     sudo chmod 400 /etc/munge/munge.key
     sudo systemctl restart munge
@@ -66,7 +119,7 @@ slurm-logs-prepare:
     sudo mkdir -p /var/spool/slurm/cluster_state
     sudo chown slurm:slurm /var/spool/slurm/cluster_state
     sudo touch /var/log/slurmctld.log
-    sudo chown slurm:slurm /var/log/slurmctld.log
+     sudo chown slurm:slurm /var/log/slurmctld.log
     sudo touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
     sudo chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
     sudo mkdir -p /opt/slurm/etc
@@ -77,9 +130,24 @@ slurm-prereqs:
     just munge-setup
     just munge-config
     just slurm-logs-prepare
-    just slurm-osdeps
+    just slurm-build-osdeps
 
-slurm-osdeps:
+slurm-run-osdeps:
+    #!/bin/env bash
+    #install os dependencies
+    sudo apt-get update 
+    sudo apt-get -y install \
+       gnupg \
+       libcgroup1 \
+       python-is-python3 \
+       python3-pip \
+       mariadb-client \
+       psmisc \
+       bash-completion \
+       vim \
+       python3-nose
+
+slurm-build-osdeps:
     #!/bin/env bash
     #install os dependencies
     sudo apt-get update 
@@ -120,8 +188,13 @@ slurm-compile-and-install:
     sudo rm -rf $tmpdir
 
 slurm-config:
-    #!/bin/env
+    #!/bin/env bash
     echo -e "CgroupAutomount=yes\nConstrainCores=yes\nConstrainRAMSpace=yes\nConstrainDevices=yes" | sudo tee -a /opt/slurm/etc/cgroup.conf
+    # This is an ugly hack below
+    for i in {{SLURM_COMPUTE_NODES}}; do echo "NodeName=$i CPUs={{SLURM_COMPUTE_NODES_CPU}} RealMemory={{SLURM_COMPUTE_NODES_MEM}} State=DOWN" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done | sudo tee -a /opt/slurm/etc/slurm.conf
+    nodeset=`for i in {{SLURM_COMPUTE_NODES}}; do echo "$i" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done  | tr '\n' ',' | sed 's/.$//'`
+    echo "NodeSet=all_nodes Nodes=$nodeset" | sudo tee -a /opt/slurm/etc/slurm.conf
+    echo "PartitionName=all Nodes=all_nodes MaxTime=INFINITE State=UP Default=YES" | sudo tee -a /opt/slurm/etc/slurm.conf
 
 
 install-efs-utils:
@@ -156,3 +229,11 @@ set-efs-conf:
     # mount efs
     {{EFS_ID}}:/ /efs efs defaults,_netdev 0 0
     EOF'
+
+
+
+nfs-client:
+    #!/bin/bash
+    sudo apt-get update
+    sudo apt-get install -y nfs-common ibnfs-utils
+
