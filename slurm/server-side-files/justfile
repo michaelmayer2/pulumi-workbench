@@ -191,7 +191,7 @@ slurm-config:
     #!/bin/env bash
     echo -e "CgroupAutomount=yes\nConstrainCores=yes\nConstrainRAMSpace=yes\nConstrainDevices=yes" | sudo tee -a /opt/slurm/etc/cgroup.conf
     # This is an ugly hack below
-    for i in {{SLURM_COMPUTE_NODES}}; do echo "NodeName=$i CPUs={{SLURM_COMPUTE_NODES_CPU}} RealMemory={{SLURM_COMPUTE_NODES_MEM}} State=DOWN" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done | sudo tee -a /opt/slurm/etc/slurm.conf
+    for i in {{SLURM_COMPUTE_NODES}}; do echo "NodeName=$i CPUs={{SLURM_COMPUTE_NODES_CPU}} RealMemory=$(( {{SLURM_COMPUTE_NODES_MEM}}*95/100 )) State=DOWN" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done | sudo tee -a /opt/slurm/etc/slurm.conf
     nodeset=`for i in {{SLURM_COMPUTE_NODES}}; do echo "$i" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done  | tr '\n' ',' | sed 's/.$//'`
     echo "NodeSet=all_nodes Nodes=$nodeset" | sudo tee -a /opt/slurm/etc/slurm.conf
     echo "PartitionName=all Nodes=all_nodes MaxTime=INFINITE State=UP Default=YES" | sudo tee -a /opt/slurm/etc/slurm.conf
