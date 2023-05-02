@@ -62,7 +62,7 @@ server-ssh num="1":
     ssh \
         -i key.pem \
         -o StrictHostKeyChecking=no \
-        ubuntu@$(pulumi stack output rsw_{{num}}_public_dns)
+        ubuntu@$(pulumi stack output slurm_head-node-{{num}}_public_dns)
 
 server-populate-simplead num="1":
     ssh \

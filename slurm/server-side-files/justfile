@@ -33,8 +33,8 @@ build-slurm-compute-nodes:
 
 start-slurmd:
     #!/bin/env bash
-    sudo mkdir /var/log/slurm
-    sudo chown slurm /var/log/slurm
+    sudo mkdir /var/{log,run}/slurm
+    sudo chown slurm /var/{log,run}/slurm
     sudo /opt/slurm/sbin/slurmd 
 
 slurm-mount:
@@ -90,7 +90,7 @@ munge-setup:
     sudo useradd -r -s /bin/bash -g munge --uid=105 munge
     #add slurm users
     sudo groupadd -r --gid=995 slurm
-    sudo useradd -r -g slurm --uid=995 slurm 
+    sudo useradd -r -s /bin/bash -g slurm --uid=995 slurm 
     sudo apt-get install -y libmunge-dev libmunge2 munge
 
 munge-config:
@@ -182,8 +182,8 @@ slurm-compile-and-install:
     pushd slurm
     ./configure --enable-debug --prefix=/opt/slurm --sysconfdir=/opt/slurm/etc \
         --with-mysql_config=/usr/bin
-    make -j $(( 2*`nproc` ))
-    sudo make install 
+    make -j $(( 2*`nproc` )) >& /dev/null
+    sudo make install > /var/log/slurm-install.log
     popd
     sudo rm -rf $tmpdir
 

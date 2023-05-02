@@ -129,7 +129,7 @@ def main():
             {"protocol": "TCP", "from_port": 2049, "to_port": 2049, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "NFS/EFS"},
             {"protocol": "TCP", "from_port": 6817, "to_port": 6817, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "slurmctld"},
             {"protocol": "TCP", "from_port": 6818, "to_port": 6818, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "slurmd"},
-            #{"protocol": "All", "from_port": 0, "to_port": 0, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "Allow all inbound traffic from subnet"},
+            {"protocol": "TCP", "from_port": 32768, "to_port": 60999, 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "Allow connection on ephemeral ports as defined by /proc/sys/net/ipv4/ip_local_port_range - needed for both SLURM and RStudio IDE sessions"},
 	],
         egress=[
             {"protocol": "All", "from_port": 0, "to_port": 0, 'cidr_blocks': ['0.0.0.0/0'], "description": "Allow all outbout traffic"},
