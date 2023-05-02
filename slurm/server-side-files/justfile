@@ -8,8 +8,11 @@ SLURM_SERVERS := env_var("SLURM_SERVERS")
 SLURM_COMPUTE_NODES := env_var("SLURM_COMPUTE_NODES")
 SLURM_COMPUTE_NODES_MEM := env_var("SLURM_COMPUTE_NODES_MEM")
 SLURM_COMPUTE_NODES_CPU := env_var("SLURM_COMPUTE_NODES_CPU")
-#AD_DOMAIN := env_var("AD_DOMAIN")
-#AD_PASSWD := env_var("AD_PASSWD")
+WORKBENCH_NODES := env_var("WORKBENCH_NODES")
+PWB_VERSION := env_var("PWB_VERSION")
+PWB_LICENSE := "" #env_var("PWB_LICENSE")
+AD_DOMAIN := env_var("AD_DOMAIN")
+AD_PASSWD := env_var("AD_PASSWD")
 
 
 do-it:
@@ -20,11 +23,144 @@ do-it:
     if [[ "{{SLURM_COMPUTE_NODES}}" =~ .*`hostname`.* ]]; then
         just build-slurm-compute-nodes
     fi
+    if [[ "{{WORKBENCH_NODES}}" =~ .*`hostname`.* ]]; then
+        just build-workbench-nodes
+    fi
+
+
+
+
+build-workbench-nodes:
+    #!/bin/env bash
+    just install-linux-tools
+    just integrate-ad
+    just mount-efs
+
+    # Set up shared drive
+    sudo mkdir -p /efs/rstudio/shared-storage
+
+    # Install RSW and required dependencies
+    just install-r 
+    just symlink-r
+    just install-rsw
+    just generate-cookie-key
+    sudo cp -r /etc/rstudio /etc/rstudio.bak
+
+    # Set up config files
+    if [ -f ~/rserver.conf ]; then
+        just copy-rsw-config-files
+        just create-launcher-ssl
+    fi
+    just setup-rsw-systemctl-overrides 
+    just install-launcher-ssl 
+    # Restart
+    just restart-clean 
+
+
+copy-rsw-config-files:
+    #!/bin/env bash
+    configdir="/efs/rstudio/etc/rstudio"
+    sudo mkdir -p $configdir
+    sudo cp ~/rserver.conf $configdir/rserver.conf 
+    sudo cp ~/load-balancer $configdir/load-balancer 
+    sudo cp ~/database.conf $configdir/database.conf
+    sudo chmod 0600 $configdir/database.conf
+    sudo chown rstudio-server:rstudio-server $configdir/database.conf 
+    sudo cp ~/launcher.conf $configdir/launcher.conf
+    sudo cp ~/logging.conf $configdir/logging.conf 
+    #rm -f ~/rserver.conf ~/load-balancer ~/database.conf ~/launcher.conf 
+    
+
+install-launcher-ssl:
+    #!/usr/bin/bash
+    sudo apt-get install -y ssl-cert
+    sudo usermod --append --groups ssl-cert rstudio-server
+
+create-launcher-ssl:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    configdir="/efs/rstudio/etc/rstudio"
+    sudo mkdir -p $configdir
+    if [ ! -f $configdir/launcher.pem ]; then 
+        sudo openssl genpkey -algorithm RSA -out $configdir/launcher.pem -pkeyopt rsa_keygen_bits:2048
+        sudo chown rstudio-server:rstudio-server $configdir/launcher.pem
+    fi
+    if [ ! -f $configdir/launcher.pub ]; then
+        sudo openssl rsa -in $configdir/launcher.pem -pubout > /tmp/launcher.pub
+        sudo cp /tmp/launcher.pub $configdir
+        sudo rm -f /tmp/launcher.pub
+        sudo chown rstudio-server:rstudio-server $configdir/launcher.pub
+    fi
+
+restart-clean:
+    sudo systemctl stop rstudio-server
+    sudo systemctl stop rstudio-launcher
+    sudo rm -rf /var/log/rstudio*
+    sudo systemctl start rstudio-launcher
+    sudo systemctl start rstudio-server
+
+
+
+
+setup-rsw-systemctl-overrides:
+    #!/bin/env bash
+    configdir="/efs/rstudio/etc/rstudio"
+    for i in server launcher 
+    do
+        sudo mkdir -p /etc/systemd/system/rstudio-$i.service.d
+        echo "[Service]" | sudo tee -a /etc/systemd/system/rstudio-$i.service.d/override.conf
+        echo "Environment=\"RSTUDIO_CONFIG_DIR=$configdir\"" | sudo tee -a /etc/systemd/system/rstudio-$i.service.d/override.conf
+    done
+    sudo systemctl daemon-reload
+
+
+
+install-r r_version='4.2.2':
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive                   
+    curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-{{r_version}}_1_amd64.deb
+    sudo -E gdebi -n r-{{r_version}}_1_amd64.deb 
+    rm -f r-{{r_version}}_1_amd64.deb
+
+symlink-r r_version='4.2.2':
+    #!/bin/bash
+    if ! [ -f /usr/local/bin/R ]; then
+        sudo ln -s /opt/R/{{r_version}}/bin/R /usr/local/bin/R
+        sudo ln -s /opt/R/{{r_version}}/bin/Rscript /usr/local/bin/Rscript
+    fi
+
+
+install-rsw:
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive
+    if [ ! -f rstudio-workbench-{{PWB_VERSION}}-amd64.deb ]; then 
+        curl -O https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-workbench-{{PWB_VERSION}}-amd64.deb
+    fi 
+    sudo -E gdebi -n rstudio-workbench-{{PWB_VERSION}}-amd64.deb 
+    #sudo rstudio-server license-manager activate {{PWB_LICENSE}}
+    rm -f rstudio-workbench-{{PWB_VERSION}}-amd64.deb
+
+generate-cookie-key:
+    #!/bin/env bash
+    export DEBIAN_FRONTEND=noninteractive                   
+    sudo apt-get update 
+    sudo apt-get install -y uuid
+    sudo mkdir -p /efs/rstudio/etc/rstudio/
+    cookie_key_location="/efs/rstudio/etc/rstudio/secure-cookie-key"
+    if [ ! -f ${cookie_key_location} ]; then 
+        sudo sh -c "echo `uuid` > ${cookie_key_location}"
+        sudo chmod 0600 ${cookie_key_location} 
+        sudo chown rstudio-server:rstudio-server ${cookie_key_location}
+    fi 
+
+
 
 build-slurm-compute-nodes:
     #!/bin/env bash
-    sudo apt-get update 
-    sudo apt-get install -y libnfs-utils nfs-common
+    just install-linux-tools
+    just integrate-ad
+    just mount-efs
+    just nfs-client
     just slurm-mount
     just slurm-run-osdeps
     just munge-setup
@@ -48,7 +184,8 @@ slurm-mount:
 build-slurm-head-nodes: 
     #!/bin/env bash
     # Basic setup
-    just install-efs-utils
+    just install-linux-tools
+    just integrate-ad
     just mount-efs 
     just slurm-prereqs
     if [ ! -d /opt/slurm/bin ]; then 
@@ -197,6 +334,16 @@ slurm-config:
     echo "PartitionName=all Nodes=all_nodes MaxTime=INFINITE State=UP Default=YES" | sudo tee -a /opt/slurm/etc/slurm.conf
 
 
+mount-efs:
+    #!/bin/env bash
+    just install-efs-utils
+    df | grep efs$
+    if [ $? -ne 0 ]; then 
+        sudo mkdir -p /efs;
+        sudo mount -t efs -o tls {{EFS_ID}}:/ /efs;
+        just set-efs-conf
+    fi
+
 install-efs-utils:
     #!/bin/env bash
     export DEBIAN_FRONTEND=noninteractive                   
@@ -213,16 +360,6 @@ install-efs-utils:
         rm -rf $tmpdir
     fi
 
-
-mount-efs:
-    #!/bin/env bash
-    df | grep efs$
-    if [ $? -ne 0 ]; then 
-        sudo mkdir -p /efs;
-        sudo mount -t efs -o tls {{EFS_ID}}:/ /efs;
-        just set-efs-conf
-    fi
-
 set-efs-conf:
     #!/bin/bash
     sudo bash -c 'cat <<EOF >> /etc/fstab
@@ -232,8 +369,73 @@ set-efs-conf:
 
 
 
+
+
+
+
 nfs-client:
     #!/bin/bash
     sudo apt-get update
-    sudo apt-get install -y nfs-common ibnfs-utils
+    sudo apt-get install -y nfs-common libnfs-utils
+
+
+### General things
+
+install-linux-tools:
+    #!/bin/bash
+    export DEBIAN_FRONTEND=noninteractive 
+    sudo -E apt-get update
+    sudo -E apt-get install -y tree
+    sudo -E apt-get install -y bat ldap-utils
+    sudo -E apt-get install -y gdebi-core
+    sudo -E apt-get install -y expect 
+    sudo -E apt-get install -y net-tools
+    echo "alias bat='batcat --paging never'" >> ~/.bashrc
+
+### AD Integration 
+
+install-adcli:
+    #!/bin/bash
+    sudo apt-get update 
+    sudo apt install -y git automake libtool libkrb5-dev libldap2-dev libsasl2-dev make
+    git clone -b 0.9.2 https://gitlab.freedesktop.org/realmd/adcli.git
+    pushd adcli
+    ./autogen.sh --disable-doc
+    make -j $(( 2*`nproc` )) 
+    sudo make install
+    popd
+    rm -rf adcli 
+
+install-ad-prereqs:
+    #!/bin/bash
+    sudo DEBIAN_FRONTEND=noninteractive apt-get -y install expect sssd realmd krb5-user samba-common packagekit pamtester
+
+update-etchosts:
+    #!/bin/bash
+    sudo apt-get install -y net-tools
+    echo -e "\n#Local server\n`ifconfig | grep inet | head -1 | awk '{print $2}'` `hostname`" | sudo tee -a /etc/hosts
+
+copy-ad-files:
+    #!/bin/bash
+    #let's remove the symlink so that systemd does not interfere 
+    sudo rm -f /etc/resolv.conf
+    sudo cp ~/krb5.conf /etc/
+    sudo cp ~/resolv.conf /etc/
+    #rm -f ~/krb5.conf ~/resolv.conf
+
+join-ad:
+    #!/bin/bash
+    echo $AD_PASSWD | sudo realm join -U Administrator $AD_DOMAIN
+    echo "ad_gpo_map_service = +rstudio" | sudo tee -a /etc/sssd/sssd.conf
+    echo "krb5_canonicalize = True" | sudo tee -a /etc/sssd/sssd.conf
+    sudo sed -i 's#use_fully_qualified_names.*#use_fully_qualified_names=False#' /etc/sssd/sssd.conf
+    sudo systemctl stop sssd && sudo rm -f /var/lib/sss/db/* && sudo systemctl start sssd
+    sudo pam-auth-update --enable mkhomedir
+
+integrate-ad:
+    just install-adcli 
+    just install-ad-prereqs
+    just update-etchosts 
+    just copy-ad-files
+    just join-ad
 

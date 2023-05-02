@@ -1,21 +1,21 @@
-name: slurm 
+name: slurm
 runtime:
   name: python
   options:
     virtualenv: venv
-description: Deploy SLURM 
+description: Deploy Posit Workbench with SLURM Launcher
 
 config:
   slurmVersion:
     type: string
-    description: SLURM version used (ex. "22.05.8-1", must contain 4 numbers) 
+    description: SLURM version used (ex. "22.05.8-1", must contain 4 numbers)
     default: 22.05.8-1
   slurmHeadNodeInstanceType:
     type: string
     description: AWS instance type for SLURM Head nodes (ex. "t3.medium")
     default: t3.xlarge
   slurmHeadNodeServerNumber:
-    type: integer 
+    type: integer
     description: Number of SLURM Head nodes
     default: 1
   slurmComputeNodeInstanceType:
@@ -25,12 +25,37 @@ config:
   slurmComputeNodeServerNumber:
     type: integer
     description: Number of SLURM Compute nodes
-    default: 2 
-  region:
-    type: string
-    description: Region to use in AWS 
-    default: eu-west-1
+    default: 2
   slurmAmi:
     type: string
     description: A valid AMI used to deploy the SLURM nodes (must be Ubunto 20.04 LTS)
     default: ami-0d2a4a5d69e46ea0b
+  pwbVersion:
+    type: string
+    description: Poit Workbench version used (ex. 2023.03.0-386.pro1)
+    default: 2023.05.0-daily-325.pro2
+  pwbInstanceType:
+    type: string
+    description: AWS instance type for Posit Workbench Servers (ex. "t3.medium")
+    default: t3.medium
+  pwbServerNumber:
+    type: integer
+    description: Number of Posit Workbench Servers (minimum value 2 due to HA/Launcher)
+    default: 2
+  pwbAmi:
+    type: string
+    description: A valid AMI used to deploy the Posit Workbench Servers (must be Ubunto 20.04 LTS)
+    default: ami-0d2a4a5d69e46ea0b
+  Domain:
+    type: string
+    description: Name of Domain to be used for AD (ex. "pwb.posit.co")
+    default: pwb.posit.co
+  DomainPW:
+    type: string
+    description: Password for the Administrator AD account 
+    default: S0perS3cret! 
+
+  region:
+    type: string
+    description: Region to use in AWS
+    default: eu-west-1

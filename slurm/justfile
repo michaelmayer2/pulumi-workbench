@@ -54,21 +54,11 @@ destroy:
 server-open num="1":
     open http://$(pulumi stack output rsw_elb_dns):80
 
-server-ip:
-    echo $(pulumi stack output rsw_1_public_ip)
-    echo $(pulumi stack output rsw_2_public_ip)
-
 server-ssh num="1":
     ssh \
         -i key.pem \
         -o StrictHostKeyChecking=no \
         ubuntu@$(pulumi stack output slurm_head-node-{{num}}_public_dns)
-
-server-populate-simplead num="1":
-    ssh \
-        -i key.pem \
-        -o StrictHostKeyChecking=no \
-        ubuntu@$(pulumi stack output rsw_{{num}}_public_dns) "sudo bash create.sh"
 
 server-load-status num="1":
     ssh \
@@ -81,7 +71,7 @@ create-users num="10":
     ssh \
         -i key.pem \
         -o StrictHostKeyChecking=no \
-        ubuntu@$(pulumi stack output rsw_1_public_dns) \
+        ubuntu@$(pulumi stack output slurm_head-node-1_public_dns) \
         "for i in \`seq 1 {{num}}\`; do expect create-users.exp posit\`printf %04i \$i\` Testme1234; echo \$i; done"
 
 #        bash -c "for i in \`seq 100 105\`; do echo \$i; done"
