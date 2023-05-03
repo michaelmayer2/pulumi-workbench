@@ -166,7 +166,7 @@ def main():
     workbench_elb = lb.LoadBalancer(
         "workbench-elb",
         internal=False,
-        #security_groups=[rsw_security_group.id],
+        #security_groups=[security_group.id],
         subnets=vpc_subnets.ids,
         load_balancer_type="network",
     )
@@ -253,6 +253,31 @@ def main():
             ami=config.pwbAmi
         )
 
+    # --------------------------------------------------------------------------
+    # Add Servers to Target Group
+    # --------------------------------------------------------------------------
+
+    for i in range(n_posit_workbench_servers):
+        lb.TargetGroupAttachment("pwb-tgt-host-"+str(i+1),
+             target_group_arn=workbench_tgt_group.arn,
+             target_id=posit_workbench_server[i].id, 
+             port="8787"
+        )
+   
+    # --------------------------------------------------------------------------
+    # Add Listener to ELB 
+    # --------------------------------------------------------------------------
+
+    lb.Listener("rsw-elb-http-listener",
+        load_balancer_arn=workbench_elb.arn,
+        protocol="TCP",
+        port=80, 
+        default_actions=[lb.ListenerDefaultActionArgs(
+                type="forward",
+                target_group_arn=workbench_tgt_group.arn,
+        )]
+    )
+
 
     # --------------------------------------------------------------------------
     # Create EFS.
@@ -263,12 +288,28 @@ def main():
 
     # Create a mount target. Assumes that the servers are on the same subnet id.
     mount_target = efs.MountTarget(
-        f"mount-target-slurm",
+        f"mount-target-slurm-1",
         file_system_id=file_system.id,
-        subnet_id=slurm_head_node[0].subnet_id,
+        subnet_id=vpc_subnets.ids[0],
+        security_groups=[security_group.id]
+    )
+
+    mount_target = efs.MountTarget(
+        f"mount-target-slurm-2",
+        file_system_id=file_system.id,
+        subnet_id=vpc_subnets.ids[1],
+        security_groups=[security_group.id]
+    )
+
+    mount_target = efs.MountTarget(
+        f"mount-target-slurm-3",
+        file_system_id=file_system.id,
+        subnet_id=vpc_subnets.ids[2],
         security_groups=[security_group.id]
     )
     
+
+
     # --------------------------------------------------------------------------
     # Create a MySQL database for SLURM accounting.
     # --------------------------------------------------------------------------
@@ -297,8 +338,8 @@ def main():
     )
 
 
-    pulumi.export("slurm_acct_db_port", slurm_acct_db.port)
-    pulumi.export("slurm_acct_db_address", slurm_acct_db.address)
+    #pulumi.export("slurm_acct_db_port", slurm_acct_db.port)
+    #pulumi.export("slurm_acct_db_address", slurm_acct_db.address)
     pulumi.export("slurm_acct_db_endpoint", slurm_acct_db.endpoint)
     pulumi.export("slurm_acct_db_name", slurm_acct_db.name)
 
@@ -327,8 +368,8 @@ def main():
         tags=tags | {"Name": "rsw-db"},
         vpc_security_group_ids=[workbench_security_group_db.id]
     )
-    pulumi.export("workbench_db_port", workbench_db.port)
-    pulumi.export("workbench_db_address", workbench_db.address)
+    #pulumi.export("workbench_db_port", workbench_db.port)
+    #pulumi.export("workbench_db_address", workbench_db.address)
     pulumi.export("workbench_db_endpoint", workbench_db.endpoint)
     pulumi.export("workbench_db_name", workbench_db.name)
 
@@ -508,6 +549,13 @@ def main():
                     "server-side-files/config/launcher.conf",
                     "~/launcher.conf",
                     pulumi.Output.all().apply(lambda x: create_template("server-side-files/config/launcher.conf").render())
+                ),
+            )
+            server_side_files.append(
+                serverSideFile(
+                    "server-side-files/config/launcher.slurm.conf",
+                    "~/launcher.slurm.conf",
+                    pulumi.Output.all().apply(lambda x: create_template("server-side-files/config/launcher.slurm.conf").render())
                 ),
             )
             server_side_files.append(

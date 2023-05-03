@@ -35,6 +35,9 @@ build-workbench-nodes:
     just install-linux-tools
     just integrate-ad
     just mount-efs
+    just munge-setup
+    just munge-key-copy
+    just slurm-path
 
     # Set up shared drive
     sudo mkdir -p /efs/rstudio/shared-storage
@@ -67,6 +70,7 @@ copy-rsw-config-files:
     sudo chmod 0600 $configdir/database.conf
     sudo chown rstudio-server:rstudio-server $configdir/database.conf 
     sudo cp ~/launcher.conf $configdir/launcher.conf
+    sudo cp ~/launcher.slurm.conf $configdir/launcher.slurm.conf
     sudo cp ~/logging.conf $configdir/logging.conf 
     #rm -f ~/rserver.conf ~/load-balancer ~/database.conf ~/launcher.conf 
     
@@ -93,13 +97,11 @@ create-launcher-ssl:
     fi
 
 restart-clean:
-    sudo systemctl stop rstudio-server
-    sudo systemctl stop rstudio-launcher
+    sudo rstudio-server stop
+    sudo rstudio-launcher stop
     sudo rm -rf /var/log/rstudio*
-    sudo systemctl start rstudio-launcher
-    sudo systemctl start rstudio-server
-
-
+    sudo rstudio-launcher start
+    sudo rstudio-server start
 
 
 setup-rsw-systemctl-overrides:
@@ -160,26 +162,31 @@ build-slurm-compute-nodes:
     just install-linux-tools
     just integrate-ad
     just mount-efs
-    just nfs-client
-    just slurm-mount
     just slurm-run-osdeps
     just munge-setup
     just munge-key-copy
     just start-slurmd 
+    just slurm-path
+    just pwb-session-components
+    just install-r
+
+
+pwb-session-components:
+    #!/bin/env bash
+    sudo apt-get install -y curl libcurl4-gnutls-dev libssl-dev libuser libuser1-dev rrdtool libpq5
+    curl -O https://s3.amazonaws.com/rstudio-ide-build/session/bionic/amd64/rsp-session-bionic-{{PWB_VERSION}}-amd64.tar.gz
+    sudo mkdir -p /usr/lib/rstudio-server
+    sudo tar -zxvf ./rsp-session-bionic-{{PWB_VERSION}}-amd64.tar.gz -C /usr/lib/rstudio-server/
+    sudo mv /usr/lib/rstudio-server/rsp-session*/* /usr/lib/rstudio-server/
+    sudo rm -rf /usr/lib/rstudio-server/rsp-session*
+    rm -f ./rsp-session-bionic-{{PWB_VERSION}}-amd64.tar.gz
+
 
 start-slurmd:
     #!/bin/env bash
     sudo mkdir /var/{log,run}/slurm
     sudo chown slurm /var/{log,run}/slurm
-    sudo /opt/slurm/sbin/slurmd 
-
-slurm-mount:
-    #!/bin/env bash
-    sudo mkdir /opt/slurm
-    echo "{{NFS_SERVER}}:/opt/slurm /opt/slurm nfs4 defaults 0 0" | sudo tee -a /etc/fstab
-    sudo mount -a
- 
-
+    sudo /efs/slurm/sbin/slurmd 
 
 build-slurm-head-nodes: 
     #!/bin/env bash
@@ -188,37 +195,29 @@ build-slurm-head-nodes:
     just integrate-ad
     just mount-efs 
     just slurm-prereqs
-    if [ ! -d /opt/slurm/bin ]; then 
+    if [ ! -d /efs/slurm/bin ]; then 
         just slurm-compile-and-install
     fi 
     just slurm-logs-prepare
     just slurm-copy-config
     just slurm-config
     just slurm-start-daemons
+    just slurm-path
 
-    just export-slurm
-    
-
-
-export-slurm:
-    #!/bin/env bash
-    sudo apt install -y nfs-kernel-server
-    echo "/opt/slurm  {{CIDR_RANGE}}(ro,sync,no_root_squash,no_subtree_check)" | sudo tee /etc/exports
-    sudo exportfs -ar
 
 
 slurm-start-daemons:
     #!/bin/env bash
-    sudo /opt/slurm/sbin/slurmdbd 
+    sudo /efs/slurm/sbin/slurmdbd 
     sleep 10
-    sudo /opt/slurm/sbin/slurmctld
+    sudo /efs/slurm/sbin/slurmctld
 
 slurm-copy-config:
     #!/bin/env bash
-    sudo cp slurmdbd.conf /opt/slurm/etc
-    sudo chmod 0600 /opt/slurm/etc/slurmdbd.conf
-    sudo chown slurm /opt/slurm/etc/slurmdbd.conf
-    sudo cp slurm.conf /opt/slurm/etc 
+    sudo cp slurmdbd.conf /efs/slurm/etc
+    sudo chmod 0600 /efs/slurm/etc/slurmdbd.conf
+    sudo chown slurm /efs/slurm/etc/slurmdbd.conf
+    sudo cp slurm.conf /efs/slurm/etc 
 
 munge-setup: 
     #!/bin/env bash
@@ -233,14 +232,14 @@ munge-setup:
 munge-config:
     #!/bin/env bash
     #create key
-    sudo mkdir -p /opt/slurm
-    sudo dd if=/dev/random bs=1 count=1024 of=/opt/slurm/.munge.key
+    sudo mkdir -p /efs/slurm
+    sudo dd if=/dev/random bs=1 count=1024 of=/efs/slurm/.munge.key
     just munge-key-copy
 
 munge-key-copy:
     #!/bin/env bash
     #copy key and add permissions
-    sudo cp /opt/slurm/.munge.key /etc/munge/munge.key
+    sudo cp /efs/slurm/.munge.key /etc/munge/munge.key
     sudo chown munge:munge /etc/munge/munge.key
     sudo chmod 400 /etc/munge/munge.key
     sudo systemctl restart munge
@@ -259,7 +258,7 @@ slurm-logs-prepare:
      sudo chown slurm:slurm /var/log/slurmctld.log
     sudo touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
     sudo chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
-    sudo mkdir -p /opt/slurm/etc
+    sudo mkdir -p /efs/slurm/etc
     sudo mkdir -p /var/{lib,log,run}/slurm
     sudo chown slurm:slurm /var/{lib,log,run}/slurm
 
@@ -317,21 +316,24 @@ slurm-compile-and-install:
     pushd $tmpdir
     git clone --depth 1 -b slurm-`echo {{SLURM_VERSION}} | sed 's/\./-/g'` https://github.com/SchedMD/slurm.git
     pushd slurm
-    ./configure --enable-debug --prefix=/opt/slurm --sysconfdir=/opt/slurm/etc \
-        --with-mysql_config=/usr/bin
-    make -j $(( 2*`nproc` )) >& /dev/null
-    sudo make install > /var/log/slurm-install.log
+    echo "configuring SLURM"
+    ./configure --enable-debug --prefix=/efs/slurm --sysconfdir=/efs/slurm/etc \
+        --with-mysql_config=/usr/bin | sudo tee /var/log/slurm-build.log >& /dev/null
+    echo "building SLURM"
+    make -j $(( 2*`nproc` )) | sudo tee -a /var/log/slurm-buildlog >& /dev/null
+    echo "installing SLURM"
+    sudo make install | sudo tee -a /var/log/slurm-build.log >& /dev/null
     popd
     sudo rm -rf $tmpdir
 
 slurm-config:
     #!/bin/env bash
-    echo -e "CgroupAutomount=yes\nConstrainCores=yes\nConstrainRAMSpace=yes\nConstrainDevices=yes" | sudo tee -a /opt/slurm/etc/cgroup.conf
+    echo -e "CgroupAutomount=yes\nConstrainCores=yes\nConstrainRAMSpace=yes\nConstrainDevices=yes" | sudo tee -a /efs/slurm/etc/cgroup.conf
     # This is an ugly hack below
-    for i in {{SLURM_COMPUTE_NODES}}; do echo "NodeName=$i CPUs={{SLURM_COMPUTE_NODES_CPU}} RealMemory=$(( {{SLURM_COMPUTE_NODES_MEM}}*95/100 )) State=DOWN" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done | sudo tee -a /opt/slurm/etc/slurm.conf
+    for i in {{SLURM_COMPUTE_NODES}}; do echo "NodeName=$i CPUs={{SLURM_COMPUTE_NODES_CPU}} RealMemory=$(( {{SLURM_COMPUTE_NODES_MEM}}*95/100 )) State=DOWN" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done | sudo tee -a /efs/slurm/etc/slurm.conf
     nodeset=`for i in {{SLURM_COMPUTE_NODES}}; do echo "$i" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done  | tr '\n' ',' | sed 's/.$//'`
-    echo "NodeSet=all_nodes Nodes=$nodeset" | sudo tee -a /opt/slurm/etc/slurm.conf
-    echo "PartitionName=all Nodes=all_nodes MaxTime=INFINITE State=UP Default=YES" | sudo tee -a /opt/slurm/etc/slurm.conf
+    echo "NodeSet=all_nodes Nodes=$nodeset" | sudo tee -a /efs/slurm/etc/slurm.conf
+    echo "PartitionName=all Nodes=all_nodes MaxTime=INFINITE State=UP Default=YES" | sudo tee -a /efs/slurm/etc/slurm.conf
 
 
 mount-efs:
@@ -373,10 +375,6 @@ set-efs-conf:
 
 
 
-nfs-client:
-    #!/bin/bash
-    sudo apt-get update
-    sudo apt-get install -y nfs-common libnfs-utils
 
 
 ### General things
@@ -439,3 +437,5 @@ integrate-ad:
     just copy-ad-files
     just join-ad
 
+slurm-path:
+    echo "export PATH=/efs/slurm/bin:\$PATH" | sudo tee -a /etc/profile.d/slurm.sh
