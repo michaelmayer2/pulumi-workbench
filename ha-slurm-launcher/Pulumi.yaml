@@ -32,7 +32,7 @@ config:
     default: ami-0d2a4a5d69e46ea0b
   pwbVersion:
     type: string
-    description: Posit Workbench version used (ex. 2023.05.0-daily-325.pro2)
+    description: Posit Workbench version used (ex. 2022.12.0-353.pro20/2023.03.0-386.pro1)
     default: 2023.03.0-386.pro1
   pwbInstanceType:
     type: string

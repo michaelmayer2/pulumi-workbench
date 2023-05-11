@@ -71,6 +71,7 @@ copy-rsw-config-files:
     sudo chown rstudio-server:rstudio-server $configdir/database.conf 
     sudo cp ~/launcher.conf $configdir/launcher.conf
     sudo cp ~/launcher.slurm.conf $configdir/launcher.slurm.conf
+    sudo cp ~/launcher.slurm.profiles.conf $configdir/launcher.slurm.profiles.conf
     sudo cp ~/logging.conf $configdir/logging.conf 
     #rm -f ~/rserver.conf ~/load-balancer ~/database.conf ~/launcher.conf 
     
@@ -333,7 +334,7 @@ slurm-config:
     for i in {{SLURM_COMPUTE_NODES}}; do echo "NodeName=$i CPUs={{SLURM_COMPUTE_NODES_CPU}} RealMemory=$(( {{SLURM_COMPUTE_NODES_MEM}}*95/100 )) State=DOWN" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done | sudo tee -a /efs/slurm/etc/slurm.conf
     nodeset=`for i in {{SLURM_COMPUTE_NODES}}; do echo "$i" |sed "s/\[\[//" | sed "s/\]\]//" | sed "s/'//g" | sed "s/\,//"; done  | tr '\n' ',' | sed 's/.$//'`
     echo "NodeSet=all_nodes Nodes=$nodeset" | sudo tee -a /efs/slurm/etc/slurm.conf
-    echo "PartitionName=all Nodes=all_nodes MaxTime=INFINITE State=UP Default=YES" | sudo tee -a /efs/slurm/etc/slurm.conf
+    echo "PartitionName=all Nodes=all_nodes OverSubscribe=FORCE MaxTime=INFINITE State=UP Default=YES" | sudo tee -a /efs/slurm/etc/slurm.conf
 
 
 mount-efs:
@@ -439,3 +440,46 @@ integrate-ad:
 
 slurm-path:
     echo "export PATH=/efs/slurm/bin:\$PATH" | sudo tee -a /etc/profile.d/slurm.sh
+
+prometheus-client:
+    #!/bin/bash
+    sudo apt-get install -y prometheus-node-exporter
+    sudo apt-get install -y prometheus-process-exporter  
+
+prometheus-server:
+    #!/bin/bash
+    sudo apt-get install -y prometheus
+    just prometheus-client
+
+    cat << EOF | sudo tee /etc/prometheus/prometheus.yml
+    global:
+    scrape_interval: 15s
+
+    scrape_configs:
+    - job_name: node
+    static_configs:
+    - targets: ['XXX']
+    EOF
+
+    prom_targets=`/opt/slurm/bin/sinfo -N  -h  | awk '{print $1}' | tr '\n' ' ' | rev | sed "s# #','#2g" | rev | sed "s#',#:9100',#g" | sed 's/ /:9100/'`
+
+    sudo sed -i "s/XXX/localhost:9100','\$prom_targets/" /etc/prometheus/prometheus.yml
+
+    sudo systemctl restart prometheus
+
+
+grafana-server:
+    #!/bin/bash
+    wget -q -O - https://packages.grafana.com/gpg.key | gpg --dearmor | sudo tee /usr/share/keyrings/grafana.gpg > /dev/null
+    sudo echo "deb [signed-by=/usr/share/keyrings/grafana.gpg] https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+    sudo apt-get update
+    sudo apt-get install -y grafana
+    sudo systemctl stop grafana-server
+    aws s3 cp s3://S3_BUCKETNAME/grafana.db.gz /var/lib/grafana
+    sudo gzip -d /var/lib/grafana/grafana.db.gz
+    sudo chown grafana:grafana /var/lib/grafana/grafana.db 
+    sudo chmod 640 /var/lib/grafana/grafana.db 
+
+    sudo systemctl start grafana-server
+
+

@@ -135,6 +135,8 @@ def main():
         ingress=[
             {"protocol": "TCP", "from_port": 22, "to_port": 22, 
                 'cidr_blocks': ['0.0.0.0/0'], "description": "SSH"},
+	    {"protocol": "TCP", "from_port": 3000, "to_port": 3000,
+                'cidr_blocks': ['0.0.0.0/0'], "description": "Grafana"},
 	        {"protocol": "TCP", "from_port": 111, "to_port": 111, 
                 'cidr_blocks': [ vpc_subnet.cidr_block ], "description": "Portmapper"},
             {"protocol": "TCP", "from_port": 2049, "to_port": 2049, 
@@ -556,6 +558,13 @@ def main():
                     "server-side-files/config/launcher.slurm.conf",
                     "~/launcher.slurm.conf",
                     pulumi.Output.all().apply(lambda x: create_template("server-side-files/config/launcher.slurm.conf").render())
+                ),
+            )
+            server_side_files.append(
+                serverSideFile(
+                    "server-side-files/config/launcher.slurm.profiles.conf",
+                    "~/launcher.slurm.profiles.conf",
+                    pulumi.Output.all().apply(lambda x: create_template("server-side-files/config/launcher.slurm.profiles.conf").render())
                 ),
             )
             server_side_files.append(
